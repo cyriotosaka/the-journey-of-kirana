@@ -1,0 +1,143 @@
+/**
+ * 🏗️ LAYOUT STYLES
+ */
+
+.game-layout {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Layer System - Z-Index Management */
+.layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.layer-game {
+    z-index: 1;
+}
+
+.layer-hud {
+    z-index: 10;
+    pointer-events: none; /* Allow clicks to pass through */
+}
+
+.layer-hud > * {
+    pointer-events: auto; /* Re-enable clicks on HUD elements */
+}
+
+.layer-dialog {
+    z-index: 20;
+}
+
+.layer-menu {
+    z-index: 30;
+}
+
+.layer-pause-menu {
+    z-index: 40;
+}
+
+/* HUD Positioning */
+.hud-top-left {
+    position: absolute;
+    top: var(--spacing-lg);
+    left: var(--spacing-lg);
+}
+
+.hud-top-right {
+    position: absolute;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+}
+
+.hud-bottom-center {
+    position: absolute;
+    bottom: var(--spacing-xl);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Pause Button */
+.pause-button {
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    color: var(--color-primary);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.pause-button:hover {
+    background: rgba(212, 175, 55, 0.2);
+    transform: scale(1.05);
+}
+
+/* Pause Menu Overlay */
+.pause-menu-overlay {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.pause-menu-container {
+    background: var(--color-bg-medium);
+    border: 3px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    min-width: 400px;
+    box-shadow: var(--shadow-lg);
+}
+
+.pause-title {
+    font-family: var(--font-title);
+    font-size: 48px;
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+.pause-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.pause-options button {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--color-bg-light);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    font-size: 18px;
+    transition: all var(--transition-fast);
+}
+
+.pause-options button:hover {
+    background: var(--color-primary);
+    color: var(--color-bg-dark);
+    transform: translateX(10px);
+}
+
+.pause-controls {
+    margin-top: var(--spacing-lg);
+    text-align: center;
+    color: var(--color-text-dim);
+    font-size: 14px;
+}

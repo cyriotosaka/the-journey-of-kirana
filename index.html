@@ -1,13 +1,118 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>the-journey-of-kirana</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- SEO Meta Tags -->
+        <meta
+            name="description"
+            content="The Journey of Kirana - Sebuah game 2.5D cinematic platformer survival horror berdasarkan cerita rakyat Keong Mas"
+        />
+        <meta
+            name="keywords"
+            content="game, platformer, horror, indonesia, keong mas, phaser, react"
+        />
+        <meta name="author" content="Journey of Kirana Team" />
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="The Journey of Kirana" />
+        <meta
+            property="og:description"
+            content="Petualangan gelap Kirana dalam dunia raksasa yang mengerikan"
+        />
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:title" content="The Journey of Kirana" />
+
+        <!-- Preload Critical Fonts (Optional) -->
+        <!-- <link rel="preload" href="/fonts/your-font.woff2" as="font" type="font/woff2" crossorigin> -->
+
+        <title>The Journey of Kirana</title>
+
+        <style>
+            /* Prevent FOUC (Flash of Unstyled Content) */
+            #root {
+                display: block;
+            }
+
+            /* Loading screen saat initial load */
+            #initial-loader {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: #000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                z-index: 9999;
+            }
+
+            #initial-loader h1 {
+                color: #d4af37;
+                font-family: Georgia, serif;
+                font-size: 32px;
+                margin-bottom: 20px;
+                animation: glow 2s ease-in-out infinite;
+            }
+
+            @keyframes glow {
+                0%,
+                100% {
+                    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+                }
+                50% {
+                    text-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+                }
+            }
+
+            .loader-spinner {
+                width: 50px;
+                height: 50px;
+                border: 4px solid rgba(212, 175, 55, 0.2);
+                border-top-color: #d4af37;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Initial Loading Screen -->
+        <div id="initial-loader">
+            <h1>THE JOURNEY OF KIRANA</h1>
+            <div class="loader-spinner"></div>
+        </div>
+
+        <!-- React Root -->
+        <div id="root"></div>
+
+        <!-- Main Script -->
+        <script type="module" src="/src/main.jsx"></script>
+
+        <!-- Remove initial loader after React loads -->
+        <script>
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    const loader = document.getElementById('initial-loader');
+                    if (loader) {
+                        loader.style.opacity = '0';
+                        loader.style.transition = 'opacity 0.5s ease';
+                        setTimeout(() => loader.remove(), 500);
+                    }
+                }, 1000);
+            });
+        </script>
+    </body>
 </html>

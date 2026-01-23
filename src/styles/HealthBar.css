@@ -1,0 +1,142 @@
+/**
+ * ❤️ HEALTH BAR STYLES
+ */
+
+.health-bar-container {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    min-width: 250px;
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(5px);
+    transition: all var(--transition-normal);
+}
+
+.health-bar-container.low-health {
+    border-color: var(--color-health-critical);
+    animation: pulse 1s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* Header */
+.health-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.health-bar-label {
+    font-family: var(--font-title);
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--color-primary);
+    letter-spacing: 1px;
+}
+
+.health-bar-value {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+}
+
+/* Health Bar Track */
+.health-bar-track {
+    position: relative;
+    height: 24px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--color-bg-medium);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.health-bar-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(212, 175, 55, 0.1),
+        rgba(212, 175, 55, 0.2)
+    );
+}
+
+/* Animation Bar (for damage/heal flash) */
+.health-bar-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: width 0.3s ease-out;
+    opacity: 0.5;
+}
+
+/* Actual Health Fill */
+.health-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(to right, var(--color-health), #22c55e);
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2);
+    transition:
+        width 0.5s ease-out,
+        background-color 0.3s ease;
+}
+
+/* Status Indicators */
+.health-warning,
+.health-dead,
+.hiding-indicator {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.health-warning {
+    background: rgba(251, 191, 36, 0.2);
+    color: var(--color-health-low);
+    border: 1px solid var(--color-health-low);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.health-dead {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--color-health-critical);
+    border: 1px solid var(--color-health-critical);
+}
+
+.hiding-indicator {
+    background: rgba(74, 222, 128, 0.2);
+    color: var(--color-health);
+    border: 1px solid var(--color-health);
+    animation: hideGlow 2s ease-in-out infinite;
+}
+
+@keyframes hideGlow {
+    0%,
+    100% {
+        box-shadow: 0 0 5px rgba(74, 222, 128, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(74, 222, 128, 0.6);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .health-bar-container {
+        min-width: 200px;
+    }
+
+    .health-bar-track {
+        height: 20px;
+    }
+}
