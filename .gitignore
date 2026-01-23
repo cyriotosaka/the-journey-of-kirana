@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs
+*.njsproj
+*.sln
+*.sw?
+
+# Tiled Map Editor (Opsional: Jika ada file backup otomatis)
+*.bak
+*.tiled-session
+
+# Raw Assets (Opsional)
+# Jika kamu punya file mentahan Photoshop/Aseprite besar yang tidak ingin di-push
+# *.psd
+# *.aseprite
+# *.kra
+
+# Environment Variables (PENTING: Jangan upload kunci API)
+.env
+.env.*
+!.env.example
+
+# Testing
+coverage
+*.lcov
+
+# Vite specific
+.vite/
