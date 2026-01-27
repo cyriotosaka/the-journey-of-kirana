@@ -1,0 +1,199 @@
+/**
+ * 💬 DIALOG BOX STYLES
+ * Visual Novel style dengan typewriter effect
+ */
+
+.dialog-overlay {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.dialog-container {
+    width: 100%;
+    max-width: 1200px;
+    padding: var(--spacing-lg);
+    pointer-events: auto;
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: flex-end;
+    animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Character Avatar */
+.dialog-avatar {
+    width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+    border: 3px solid var(--color-primary);
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--color-bg-dark);
+    box-shadow: var(--shadow-glow);
+}
+
+.dialog-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Dialog Box */
+.dialog-box {
+    flex: 1;
+    background: linear-gradient(
+        to bottom,
+        rgba(26, 26, 26, 0.95),
+        rgba(10, 10, 10, 0.98)
+    );
+    border: 3px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: border-color var(--transition-fast);
+}
+
+.dialog-box:hover {
+    border-color: #e5c158;
+}
+
+/* Character Name */
+.dialog-character-name {
+    font-family: var(--font-title);
+    font-size: 20px;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+/* Dialog Text */
+.dialog-text {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    min-height: 80px;
+    position: relative;
+}
+
+.typing-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--color-primary);
+    margin-left: 4px;
+    animation: blink 0.8s step-end infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Continue Indicator */
+.dialog-continue {
+    text-align: center;
+    color: var(--color-text-dim);
+    font-size: 14px;
+    margin-top: var(--spacing-md);
+    animation: bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Choice Buttons */
+.dialog-choices {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+}
+
+.dialog-choice-button {
+    padding: var(--spacing-md);
+    background: var(--color-bg-light);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.dialog-choice-button:hover {
+    background: var(--color-primary);
+    color: var(--color-bg-dark);
+    transform: translateX(10px);
+    box-shadow: var(--shadow-glow);
+}
+
+.choice-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--color-primary);
+    color: var(--color-bg-dark);
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.dialog-choice-button:hover .choice-number {
+    background: var(--color-bg-dark);
+    color: var(--color-primary);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .dialog-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dialog-avatar {
+        width: 80px;
+        height: 80px;
+    }
+
+    .dialog-text {
+        font-size: 16px;
+        min-height: 60px;
+    }
+}

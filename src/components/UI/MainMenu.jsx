@@ -18,8 +18,8 @@ const MainMenu = ({ onStartGame }) => {
     const gameReady = useGameStore((state) => state.gameReady);
 
     const menuOptions = [
-        { label: 'MULAI PETUALANGAN', action: 'new_game', enabled: gameReady },
-        { label: 'LANJUTKAN', action: 'continue', enabled: false }, // TODO: Implement save system
+        { label: 'MULAI PETUALANGAN', action: 'new_game', enabled: true }, // Always enabled now!
+        { label: 'LANJUTKAN', action: 'continue', enabled: false },
         { label: 'PENGATURAN', action: 'settings', enabled: false },
         { label: 'KREDIT', action: 'credits', enabled: true },
     ];
@@ -173,14 +173,6 @@ const MainMenu = ({ onStartGame }) => {
                     </button>
                 ))}
             </div>
-
-            {/* Loading Indicator */}
-            {!gameReady && (
-                <div className="loading-indicator">
-                    <div className="loading-spinner"></div>
-                    <p>Memuat game...</p>
-                </div>
-            )}
 
             {/* Controls Hint */}
             <div className="menu-controls">
