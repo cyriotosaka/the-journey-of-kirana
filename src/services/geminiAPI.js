@@ -3,11 +3,87 @@
  *
  * Menggunakan Google Gemini AI untuk generate dynamic NPC dialog
  * Sesuai dengan konteks situasi dan personality karakter
+ * 
+ * Features:
+ * - Memory cache untuk response yang sudah di-generate
+ * - LRU-style eviction (max 50 entries)
  */
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
 const GEMINI_API_URL =
     'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+
+// ========== MEMORY CACHE ==========
+const CACHE_MAX_SIZE = 50;
+const responseCache = new Map();
+
+/**
+ * Generate cache key dari parameter dialog
+ */
+const generateCacheKey = ({ character, situation, playerAction, mood }) => {
+    return `${character}:${situation}:${playerAction}:${mood}`.toLowerCase();
+};
+
+/**
+ * Get dari cache, update access time
+ */
+const getFromCache = (key) => {
+    if (responseCache.has(key)) {
+        const cached = responseCache.get(key);
+        // Update timestamp untuk LRU
+        cached.accessedAt = Date.now();
+        console.log('📦 Cache hit for:', key.substring(0, 50) + '...');
+        return cached.response;
+    }
+    return null;
+};
+
+/**
+ * Save ke cache, evict jika penuh
+ */
+const saveToCache = (key, response) => {
+    // Evict oldest jika cache penuh
+    if (responseCache.size >= CACHE_MAX_SIZE) {
+        let oldestKey = null;
+        let oldestTime = Infinity;
+        
+        for (const [k, v] of responseCache) {
+            if (v.accessedAt < oldestTime) {
+                oldestTime = v.accessedAt;
+                oldestKey = k;
+            }
+        }
+        
+        if (oldestKey) {
+            responseCache.delete(oldestKey);
+            console.log('🗑️ Cache evicted:', oldestKey.substring(0, 30) + '...');
+        }
+    }
+    
+    responseCache.set(key, {
+        response,
+        accessedAt: Date.now(),
+        createdAt: Date.now(),
+    });
+    console.log('💾 Cache saved:', key.substring(0, 50) + '...');
+};
+
+/**
+ * Clear all cache (untuk testing/reset)
+ */
+export const clearAICache = () => {
+    responseCache.clear();
+    console.log('🧹 AI cache cleared');
+};
+
+/**
+ * Get cache stats
+ */
+export const getCacheStats = () => ({
+    size: responseCache.size,
+    maxSize: CACHE_MAX_SIZE,
+    keys: Array.from(responseCache.keys()),
+});
 
 /**
  * Character personalities untuk consistent dialog generation
@@ -40,6 +116,7 @@ const CHARACTER_PERSONALITIES = {
 
 /**
  * Generate AI dialog berdasarkan konteks situasi
+ * Uses memory cache to avoid repeated API calls
  */
 export const generateAIDialog = async ({
     character = 'spirit',
@@ -47,7 +124,16 @@ export const generateAIDialog = async ({
     playerAction = '',
     mood = 'neutral',
     maxLength = 150,
+    useCache = true, // Set false untuk force fresh response
 }) => {
+    // Check cache first
+    const cacheKey = generateCacheKey({ character, situation, playerAction, mood });
+    
+    if (useCache) {
+        const cached = getFromCache(cacheKey);
+        if (cached) return cached;
+    }
+
     if (!GEMINI_API_KEY) {
         console.warn('Gemini API key tidak ditemukan. Gunakan dialog default.');
         return getDefaultDialog(character, situation);
@@ -108,10 +194,15 @@ Buat dialog yang atmospheric dan sesuai genre horror survival.
         const generatedText = data.candidates[0]?.content?.parts[0]?.text || '';
 
         // Clean up the response
-        return generatedText
+        const cleanedResponse = generatedText
             .trim()
             .replace(/^["']|["']$/g, '') // Remove quotes
             .substring(0, maxLength); // Enforce max length
+
+        // Save to cache for future use
+        saveToCache(cacheKey, cleanedResponse);
+
+        return cleanedResponse;
     } catch (error) {
         console.error('Error generating AI dialog:', error);
         return getDefaultDialog(character, situation);
