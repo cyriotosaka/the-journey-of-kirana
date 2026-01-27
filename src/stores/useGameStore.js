@@ -315,6 +315,52 @@ const useGameStore = create((set, get) => ({
             },
         })),
 
+    // ========== TOAST NOTIFICATIONS ==========
+    toasts: [],
+
+    addToast: (toast) =>
+        set((state) => ({
+            toasts: [...state.toasts, toast],
+        })),
+
+    removeToast: (id) =>
+        set((state) => ({
+            toasts: state.toasts.filter((t) => t.id !== id),
+        })),
+
+    clearToasts: () => set({ toasts: [] }),
+
+    // ========== SCENE TRANSITIONS ==========
+    transition: {
+        isActive: false,
+        levelName: null,
+        subtitle: null,
+        showLoading: false,
+        duration: 2000,
+    },
+
+    startTransition: ({ levelName, subtitle, showLoading, duration }) =>
+        set({
+            transition: {
+                isActive: true,
+                levelName: levelName || null,
+                subtitle: subtitle || null,
+                showLoading: showLoading || false,
+                duration: duration || 2000,
+            },
+        }),
+
+    endTransition: () =>
+        set({
+            transition: {
+                isActive: false,
+                levelName: null,
+                subtitle: null,
+                showLoading: false,
+                duration: 2000,
+            },
+        }),
+
     // ========== RESET GAME ==========
     resetGame: () =>
         set({

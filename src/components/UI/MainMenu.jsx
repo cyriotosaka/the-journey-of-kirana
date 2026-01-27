@@ -22,15 +22,12 @@ const MainMenu = ({ onStartGame }) => {
     const gameReady = useGameStore((state) => state.gameReady);
     const loadFromSave = useGameStore((state) => state.loadFromSave);
     
-    // Save data from persisted store
+    // Save data from persisted store - access individual values to avoid infinite loop
     const hasSaveData = useSaveDataStore((state) => state.hasSaveData);
-    const saveData = useSaveDataStore((state) => ({
-        currentLevel: state.currentLevel,
-        savedInventory: state.savedInventory,
-        savedHealth: state.savedHealth,
-        lastSaved: state.lastSaved,
-    }));
-    const getFormattedPlayTime = useSaveDataStore((state) => state.getFormattedPlayTime);
+    const currentLevel = useSaveDataStore((state) => state.currentLevel);
+    const savedInventory = useSaveDataStore((state) => state.savedInventory);
+    const savedHealth = useSaveDataStore((state) => state.savedHealth);
+    const lastSaved = useSaveDataStore((state) => state.lastSaved);
 
     const menuOptions = [
         { label: 'MULAI PETUALANGAN', action: 'new_game', enabled: true },
@@ -38,7 +35,7 @@ const MainMenu = ({ onStartGame }) => {
             label: 'LANJUTKAN', 
             action: 'continue', 
             enabled: hasSaveData,
-            subtitle: hasSaveData ? `Level: ${saveData.currentLevel}` : null
+            subtitle: hasSaveData ? `Level: ${currentLevel}` : null
         },
         { label: 'PENGATURAN', action: 'settings', enabled: true },
         { label: 'KREDIT', action: 'credits', enabled: true },
@@ -103,6 +100,7 @@ const MainMenu = ({ onStartGame }) => {
             case 'continue':
                 if (hasSaveData) {
                     // Load save data into game store
+                    const saveData = { currentLevel, savedInventory, savedHealth, lastSaved };
                     loadFromSave(saveData);
                     EventBus.emit('menu:continue_game', saveData);
                     if (onStartGame) onStartGame();
@@ -217,7 +215,7 @@ const MainMenu = ({ onStartGame }) => {
             {/* Save Info */}
             {hasSaveData && (
                 <div className="save-info">
-                    <span>💾 Terakhir disimpan: {new Date(saveData.lastSaved).toLocaleDateString('id-ID')}</span>
+                    <span>💾 Terakhir disimpan: {new Date(lastSaved).toLocaleDateString('id-ID')}</span>
                 </div>
             )}
 

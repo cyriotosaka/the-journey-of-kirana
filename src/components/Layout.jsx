@@ -11,6 +11,8 @@ import { useState } from 'react';
 import PhaserContainer from './Game/PhaserContainer';
 import MainMenu from './UI/MainMenu';
 import DialogBox from './UI/DialogBox';
+import ToastNotification from './UI/ToastNotification';
+import SceneTransition from './UI/SceneTransition';
 import HealthBar from './HUD/HealthBar';
 import InventoryBar from './HUD/InventoryBar';
 import useGameStore from '../stores/useGameStore';
@@ -21,7 +23,10 @@ import '../styles/Layout.css';
 const Layout = () => {
     useGameState(); // Initialize event listeners
 
-    const [gameStarted, setGameStarted] = useState(false);
+    // Persist gameStarted in sessionStorage so refresh doesn't go back to menu
+    const [gameStarted, setGameStarted] = useState(() => {
+        return sessionStorage.getItem('kirana-game-started') === 'true';
+    });
     
     // Initialize keyboard shortcuts
     useKeyboardShortcuts(gameStarted);
@@ -33,6 +38,14 @@ const Layout = () => {
     // ========== HANDLE START GAME ==========
     const handleStartGame = () => {
         setGameStarted(true);
+        sessionStorage.setItem('kirana-game-started', 'true');
+    };
+
+    // ========== HANDLE BACK TO MENU (from pause) ==========
+    const handleBackToMenu = () => {
+        setGameStarted(false);
+        sessionStorage.removeItem('kirana-game-started');
+        if (showMenu) toggleMenu();
     };
 
     // ========== PAUSE MENU TOGGLE ==========
@@ -105,12 +118,7 @@ const Layout = () => {
                                 >
                                     Pengaturan
                                 </button>
-                                <button
-                                    onClick={() => {
-                                        setGameStarted(false);
-                                        toggleMenu();
-                                    }}
-                                >
+                                <button onClick={handleBackToMenu}>
                                     Kembali ke Menu
                                 </button>
                             </div>
@@ -123,8 +131,11 @@ const Layout = () => {
                 </div>
             )}
 
-            {/* ========== LOADING SCREEN (Future) ========== */}
-            {/* Could add scene transition loading screens here */}
+            {/* ========== SCENE TRANSITION OVERLAY ========== */}
+            <SceneTransition />
+
+            {/* ========== TOAST NOTIFICATIONS ========== */}
+            <ToastNotification />
         </div>
     );
 };

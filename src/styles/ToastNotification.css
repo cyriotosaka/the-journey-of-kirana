@@ -1,0 +1,132 @@
+/**
+ * 🍞 TOAST NOTIFICATION STYLES
+ *
+ * Styling untuk toast notifications dengan tema emas horror
+ */
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+    pointer-events: none;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(180deg, #1a1510 0%, #0d0a07 100%);
+    border: 1px solid #4a3825;
+    border-radius: 8px;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+    cursor: pointer;
+    animation: toastSlideIn 0.3s ease-out;
+    transition: all 0.2s ease;
+}
+
+.toast:hover {
+    transform: translateX(-5px);
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Toast Types */
+.toast-success {
+    border-color: #4ade80;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(74, 222, 128, 0.2);
+}
+
+.toast-warning {
+    border-color: #fbbf24;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(251, 191, 36, 0.2);
+}
+
+.toast-error {
+    border-color: #f87171;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(248, 113, 113, 0.2);
+}
+
+.toast-info {
+    border-color: #d4af37;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.8),
+        0 0 10px rgba(212, 175, 55, 0.2);
+}
+
+.toast-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.toast-message {
+    flex: 1;
+    color: #c4b38a;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.toast-success .toast-message {
+    color: #4ade80;
+}
+
+.toast-warning .toast-message {
+    color: #fbbf24;
+}
+
+.toast-error .toast-message {
+    color: #f87171;
+}
+
+.toast-info .toast-message {
+    color: #d4af37;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: #8a7a5a;
+    font-size: 1.2rem;
+    padding: 0 4px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+}
+
+.toast-close:hover {
+    opacity: 1;
+    color: #d4af37;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .toast-container {
+        left: 10px;
+        right: 10px;
+        max-width: none;
+    }
+}

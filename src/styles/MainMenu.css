@@ -253,10 +253,8 @@
 
 /* Controls Hint */
 .menu-controls {
-    position: absolute;
-    bottom: var(--spacing-xl);
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    margin-top: 2rem;
     z-index: 10;
     text-align: center;
 }

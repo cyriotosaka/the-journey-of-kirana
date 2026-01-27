@@ -8,7 +8,7 @@
  */
 
 import { useSettingsStore } from '../../stores/useGameStore';
-import '../styles/SettingsPanel.css';
+import '../../styles/SettingsPanel.css';
 
 const SettingsPanel = ({ onClose }) => {
     const bgmVolume = useSettingsStore((state) => state.bgmVolume);
