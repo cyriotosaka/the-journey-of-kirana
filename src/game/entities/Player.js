@@ -13,6 +13,36 @@ import { StateMachine, PlayerStates } from '../utils/StateMachine';
 import { InputManager } from '../systems/InputManager';
 import { EventBus, EVENTS, GameEvents } from '../systems/EventBus';
 
+// ========== PLAYER CONFIGURATION ==========
+// Extract all magic numbers for easy tuning
+export const PLAYER_CONFIG = {
+    // Stats
+    MAX_HEALTH: 100,
+    INITIAL_HEALTH: 100,
+    
+    // Movement
+    MOVE_SPEED: 4,
+    JUMP_FORCE: 10,
+    NORMAL_FRICTION: 0.1,
+    SHELL_FRICTION: 0.9,
+    FRICTION_AIR: 0.02,
+    
+    // Physics
+    BODY_WIDTH: 28,
+    BODY_HEIGHT: 44,
+    BODY_CHAMFER: 6,
+    SENSOR_WIDTH: 20,
+    SENSOR_HEIGHT: 6,
+    SENSOR_OFFSET_Y: 24,
+    
+    // Combat
+    INVINCIBILITY_DURATION: 1000,
+    FLASH_DURATION: 100,
+    
+    // Rendering
+    DEPTH: 10,
+};
+
 export class Player extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y) {
         super(scene.matter.world, x, y, 'kirana', 0);
@@ -20,9 +50,9 @@ export class Player extends Phaser.Physics.Matter.Sprite {
         scene.add.existing(this);
         this.scene = scene;
 
-        // ========== PLAYER STATS ==========
-        this.health = 100;
-        this.maxHealth = 100;
+        // ========== PLAYER STATS (from config) ==========
+        this.health = PLAYER_CONFIG.INITIAL_HEALTH;
+        this.maxHealth = PLAYER_CONFIG.MAX_HEALTH;
 
         // ========== STATE FLAGS ==========
         this.isHiding = false;
@@ -31,11 +61,11 @@ export class Player extends Phaser.Physics.Matter.Sprite {
         this.canInteract = false;
         this.currentInteractable = null;
 
-        // ========== MOVEMENT CONFIG ==========
-        this.moveSpeed = 4;
-        this.jumpForce = 10;
-        this.normalFriction = 0.1;
-        this.shellFriction = 0.9;
+        // ========== MOVEMENT CONFIG (from config) ==========
+        this.moveSpeed = PLAYER_CONFIG.MOVE_SPEED;
+        this.jumpForce = PLAYER_CONFIG.JUMP_FORCE;
+        this.normalFriction = PLAYER_CONFIG.NORMAL_FRICTION;
+        this.shellFriction = PLAYER_CONFIG.SHELL_FRICTION;
 
         // ========== GROUND DETECTION ==========
         this.touchingGround = false;
@@ -54,21 +84,22 @@ export class Player extends Phaser.Physics.Matter.Sprite {
         // Emit initial health
         GameEvents.updateHealth(this.health, this.maxHealth);
 
-        // Set depth
-        this.setDepth(10);
+        // Set depth (from config)
+        this.setDepth(PLAYER_CONFIG.DEPTH);
     }
 
     setupPhysics() {
         const { Body, Bodies } = Phaser.Physics.Matter.Matter;
+        const { BODY_WIDTH, BODY_HEIGHT, BODY_CHAMFER, SENSOR_WIDTH, SENSOR_HEIGHT, SENSOR_OFFSET_Y, FRICTION_AIR } = PLAYER_CONFIG;
 
         // Main body
-        const mainBody = Bodies.rectangle(0, 0, 28, 44, {
-            chamfer: { radius: 6 },
+        const mainBody = Bodies.rectangle(0, 0, BODY_WIDTH, BODY_HEIGHT, {
+            chamfer: { radius: BODY_CHAMFER },
             label: 'player_body',
         });
 
         // Ground sensor di kaki
-        this.groundSensor = Bodies.rectangle(0, 24, 20, 6, {
+        this.groundSensor = Bodies.rectangle(0, SENSOR_OFFSET_Y, SENSOR_WIDTH, SENSOR_HEIGHT, {
             isSensor: true,
             label: 'player_ground_sensor',
         });
@@ -77,7 +108,7 @@ export class Player extends Phaser.Physics.Matter.Sprite {
         const compoundBody = Body.create({
             parts: [mainBody, this.groundSensor],
             friction: this.normalFriction,
-            frictionAir: 0.02,
+            frictionAir: FRICTION_AIR,
             restitution: 0,
             label: 'player',
         });

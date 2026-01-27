@@ -1,0 +1,19 @@
+# ===========================================
+# 🐳 DOCKER COMPOSE DEV - Hot Reload
+# ===========================================
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  kirana-game:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_GEMINI_API_KEY=${VITE_GEMINI_API_KEY}
+    command: npm run dev -- --host 0.0.0.0
