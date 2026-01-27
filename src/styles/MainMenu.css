@@ -350,3 +350,41 @@
         font-size: 16px;
     }
 }
+
+/* Menu Subtitle (for save info) */
+.menu-subtitle {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-dim, #8a7a5a);
+    margin-top: 4px;
+    font-style: normal;
+}
+
+/* Save Info Display */
+.save-info {
+    position: relative;
+    z-index: 10;
+    margin-top: var(--spacing-lg, 1.5rem);
+    padding: 0.5rem 1rem;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: var(--radius-sm, 4px);
+    color: var(--color-text-dim, #8a7a5a);
+    font-size: 12px;
+}
+
+.save-info span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+

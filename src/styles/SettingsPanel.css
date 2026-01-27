@@ -1,0 +1,200 @@
+/**
+ * ⚙️ SETTINGS PANEL STYLES
+ *
+ * Styling untuk settings panel dengan tema emas horror
+ */
+
+.settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.settings-panel {
+    background: linear-gradient(180deg, #1a1510 0%, #0d0a07 100%);
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    padding: 2rem;
+    min-width: 400px;
+    max-width: 500px;
+    box-shadow: 
+        0 0 30px rgba(212, 175, 55, 0.3),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.settings-title {
+    font-family: Georgia, serif;
+    font-size: 1.8rem;
+    color: #d4af37;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    letter-spacing: 3px;
+}
+
+.settings-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.settings-section:last-of-type {
+    border-bottom: none;
+}
+
+.settings-section-title {
+    font-size: 1rem;
+    color: #b8956b;
+    margin-bottom: 0.75rem;
+    font-weight: normal;
+}
+
+.settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+}
+
+.settings-label {
+    color: #c4b38a;
+    font-size: 0.9rem;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.volume-slider {
+    width: 120px;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #2a2015;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #d4af37;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+    transition: transform 0.2s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #d4af37;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.volume-value {
+    color: #d4af37;
+    font-size: 0.85rem;
+    min-width: 40px;
+    text-align: right;
+}
+
+.toggle-button {
+    padding: 0.5rem 1rem;
+    background: #2a2015;
+    border: 1px solid #4a3825;
+    color: #8a7a5a;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+}
+
+.toggle-button:hover {
+    border-color: #d4af37;
+    color: #d4af37;
+}
+
+.toggle-button.active {
+    background: linear-gradient(180deg, #d4af37 0%, #b8956b 100%);
+    color: #0d0a07;
+    border-color: #d4af37;
+    font-weight: bold;
+}
+
+.controls-info {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.control-key {
+    background: #2a2015;
+    border: 1px solid #4a3825;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    color: #d4af37;
+    font-size: 0.75rem;
+    min-width: 60px;
+    text-align: center;
+    font-family: monospace;
+}
+
+.control-action {
+    color: #8a7a5a;
+    font-size: 0.85rem;
+}
+
+.settings-close-button {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    background: linear-gradient(180deg, #2a2015 0%, #1a1510 100%);
+    border: 1px solid #d4af37;
+    color: #d4af37;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-family: Georgia, serif;
+    letter-spacing: 1px;
+}
+
+.settings-close-button:hover {
+    background: linear-gradient(180deg, #d4af37 0%, #b8956b 100%);
+    color: #0d0a07;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

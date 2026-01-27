@@ -3,10 +3,106 @@
  *
  * Menyimpan semua state game yang perlu diakses oleh React components
  * Sinkronisasi dengan Phaser melalui EventBus
+ * 
+ * Features:
+ * - Persist middleware untuk save/load game
+ * - Settings management
  */
 
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
+// ========== SETTINGS STORE (Persisted) ==========
+export const useSettingsStore = create(
+    persist(
+        (set, get) => ({
+            // Volume settings
+            bgmVolume: 70,
+            sfxVolume: 80,
+            
+            // Display settings
+            isFullscreen: false,
+            
+            // Actions
+            setBgmVolume: (volume) => set({ bgmVolume: Math.max(0, Math.min(100, volume)) }),
+            setSfxVolume: (volume) => set({ sfxVolume: Math.max(0, Math.min(100, volume)) }),
+            setFullscreen: (isFullscreen) => set({ isFullscreen }),
+            
+            toggleFullscreen: () => {
+                const newState = !get().isFullscreen;
+                set({ isFullscreen: newState });
+                
+                // Actually toggle fullscreen
+                if (newState) {
+                    document.documentElement.requestFullscreen?.();
+                } else {
+                    document.exitFullscreen?.();
+                }
+            },
+        }),
+        {
+            name: 'kirana-settings',
+            storage: createJSONStorage(() => localStorage),
+        }
+    )
+);
+
+// ========== SAVE DATA STORE (Persisted) ==========
+export const useSaveDataStore = create(
+    persist(
+        (set, get) => ({
+            // Save data
+            hasSaveData: false,
+            currentLevel: 'Level1',
+            checkpointPosition: { x: 100, y: 500 },
+            savedInventory: [],
+            savedHealth: 100,
+            playTime: 0, // in seconds
+            lastSaved: null,
+            
+            // Save game
+            saveGame: (data) => set({
+                hasSaveData: true,
+                currentLevel: data.level || get().currentLevel,
+                checkpointPosition: data.position || get().checkpointPosition,
+                savedInventory: data.inventory || [],
+                savedHealth: data.health || 100,
+                playTime: data.playTime || get().playTime,
+                lastSaved: new Date().toISOString(),
+            }),
+            
+            // Clear save
+            deleteSave: () => set({
+                hasSaveData: false,
+                currentLevel: 'Level1',
+                checkpointPosition: { x: 100, y: 500 },
+                savedInventory: [],
+                savedHealth: 100,
+                playTime: 0,
+                lastSaved: null,
+            }),
+            
+            // Get formatted play time
+            getFormattedPlayTime: () => {
+                const seconds = get().playTime;
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const secs = seconds % 60;
+                
+                if (hours > 0) {
+                    return `${hours}j ${minutes}m`;
+                }
+                return `${minutes}m ${secs}d`;
+            },
+        }),
+        {
+            name: 'kirana-save',
+            storage: createJSONStorage(() => localStorage),
+        }
+    )
+);
+
+// ========== MAIN GAME STORE (Session only, not persisted) ==========
 const useGameStore = create((set, get) => ({
     // ========== GAME STATE ==========
     gameReady: false,
@@ -183,6 +279,7 @@ const useGameStore = create((set, get) => ({
     ui: {
         showInventory: false,
         showMenu: false,
+        showSettings: false,
         showHUD: true,
     },
 
@@ -199,6 +296,14 @@ const useGameStore = create((set, get) => ({
             ui: {
                 ...state.ui,
                 showMenu: !state.ui.showMenu,
+            },
+        })),
+
+    toggleSettings: () =>
+        set((state) => ({
+            ui: {
+                ...state.ui,
+                showSettings: !state.ui.showSettings,
             },
         })),
 
@@ -235,9 +340,27 @@ const useGameStore = create((set, get) => ({
             ui: {
                 showInventory: false,
                 showMenu: false,
+                showSettings: false,
                 showHUD: true,
             },
             isPaused: false,
+        }),
+
+    // ========== LOAD FROM SAVE ==========
+    loadFromSave: (saveData) =>
+        set({
+            player: {
+                health: saveData.savedHealth || 100,
+                maxHealth: 100,
+                isHiding: false,
+                isDead: false,
+            },
+            inventory: {
+                items: saveData.savedInventory || [],
+                maxSlots: 6,
+                selectedSlot: null,
+            },
+            currentScene: saveData.currentLevel || 'Level1',
         }),
 }));
 

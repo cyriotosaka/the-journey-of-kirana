@@ -8,7 +8,7 @@
 import { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import { EventBus, GameEvents } from '../../game/systems/EventBus';
-import gameConfig from '../../game/config/gameConfig';
+import gameConfig from '../../game/config/GameConfig';
 
 const PhaserContainer = () => {
     const gameRef = useRef(null);

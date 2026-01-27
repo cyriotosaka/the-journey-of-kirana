@@ -5,22 +5,42 @@
  * - Animated title
  * - Menu options (New Game, Continue, Settings, Credits)
  * - Background ambience
+ * - Save/Load integration
  */
 
 import { useState, useEffect } from 'react';
 import { EventBus } from '../../game/systems/EventBus';
-import useGameStore from '../../stores/useGameStore';
+import useGameStore, { useSaveDataStore } from '../../stores/useGameStore';
+import SettingsPanel from './SettingsPanel';
 import '../styles/MainMenu.css';
 
 const MainMenu = ({ onStartGame }) => {
     const [selectedOption, setSelectedOption] = useState(0);
     const [showCredits, setShowCredits] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    
     const gameReady = useGameStore((state) => state.gameReady);
+    const loadFromSave = useGameStore((state) => state.loadFromSave);
+    
+    // Save data from persisted store
+    const hasSaveData = useSaveDataStore((state) => state.hasSaveData);
+    const saveData = useSaveDataStore((state) => ({
+        currentLevel: state.currentLevel,
+        savedInventory: state.savedInventory,
+        savedHealth: state.savedHealth,
+        lastSaved: state.lastSaved,
+    }));
+    const getFormattedPlayTime = useSaveDataStore((state) => state.getFormattedPlayTime);
 
     const menuOptions = [
-        { label: 'MULAI PETUALANGAN', action: 'new_game', enabled: true }, // Always enabled now!
-        { label: 'LANJUTKAN', action: 'continue', enabled: false },
-        { label: 'PENGATURAN', action: 'settings', enabled: false },
+        { label: 'MULAI PETUALANGAN', action: 'new_game', enabled: true },
+        { 
+            label: 'LANJUTKAN', 
+            action: 'continue', 
+            enabled: hasSaveData,
+            subtitle: hasSaveData ? `Level: ${saveData.currentLevel}` : null
+        },
+        { label: 'PENGATURAN', action: 'settings', enabled: true },
         { label: 'KREDIT', action: 'credits', enabled: true },
     ];
 
@@ -30,6 +50,13 @@ const MainMenu = ({ onStartGame }) => {
             if (showCredits) {
                 if (e.key === 'Escape' || e.key === 'Enter') {
                     setShowCredits(false);
+                }
+                return;
+            }
+
+            if (showSettings) {
+                if (e.key === 'Escape') {
+                    setShowSettings(false);
                 }
                 return;
             }
@@ -61,7 +88,7 @@ const MainMenu = ({ onStartGame }) => {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [selectedOption, showCredits, menuOptions]);
+    }, [selectedOption, showCredits, showSettings, menuOptions]);
 
     // ========== HANDLE MENU SELECTION ==========
     const handleMenuClick = (option) => {
@@ -74,11 +101,16 @@ const MainMenu = ({ onStartGame }) => {
                 break;
 
             case 'continue':
-                EventBus.emit('menu:continue_game');
+                if (hasSaveData) {
+                    // Load save data into game store
+                    loadFromSave(saveData);
+                    EventBus.emit('menu:continue_game', saveData);
+                    if (onStartGame) onStartGame();
+                }
                 break;
 
             case 'settings':
-                // TODO: Open settings panel
+                setShowSettings(true);
                 break;
 
             case 'credits':
@@ -86,6 +118,11 @@ const MainMenu = ({ onStartGame }) => {
                 break;
         }
     };
+
+    // ========== RENDER SETTINGS ==========
+    if (showSettings) {
+        return <SettingsPanel onClose={() => setShowSettings(false)} />;
+    }
 
     // ========== RENDER CREDITS ==========
     if (showCredits) {
@@ -167,12 +204,22 @@ const MainMenu = ({ onStartGame }) => {
                             <span className="menu-cursor">▶ </span>
                         )}
                         {option.label}
+                        {option.subtitle && (
+                            <span className="menu-subtitle">{option.subtitle}</span>
+                        )}
                         {!option.enabled && (
-                            <span className="coming-soon"> (Segera)</span>
+                            <span className="coming-soon"> (Tidak ada data)</span>
                         )}
                     </button>
                 ))}
             </div>
+
+            {/* Save Info */}
+            {hasSaveData && (
+                <div className="save-info">
+                    <span>💾 Terakhir disimpan: {new Date(saveData.lastSaved).toLocaleDateString('id-ID')}</span>
+                </div>
+            )}
 
             {/* Controls Hint */}
             <div className="menu-controls">

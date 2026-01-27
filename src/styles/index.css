@@ -1,6 +1,21 @@
 /**
- * 🎨 INDEX - CSS RESET
+ * 🎨 INDEX - CSS RESET & CUSTOM CURSOR
  */
+
+/* ========== CSS VARIABLES ========== */
+:root {
+    --color-gold: #d4af37;
+    --color-gold-dark: #b8956b;
+    --color-gold-light: #f4d76b;
+    --color-bg-dark: #0d0a07;
+    --color-bg-medium: #1a1510;
+    --color-text: #c4b38a;
+    --color-text-dim: #8a7a5a;
+    
+    /* Custom Cursor (using emoji fallback, replace with custom PNG later) */
+    --cursor-default: default;
+    --cursor-pointer: pointer;
+}
 
 * {
     margin: 0;
@@ -26,6 +41,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
     background: #000;
     color: #fff;
+    
+    /* Custom cursor - dapat diganti dengan URL gambar custom */
+    /* cursor: url('/assets/images/ui/cursor-default.png') 0 0, auto; */
+    cursor: var(--cursor-default);
 }
 
 code {
@@ -35,14 +54,30 @@ code {
 
 button {
     font-family: inherit;
-    cursor: pointer;
     border: none;
     background: none;
+    
+    /* Custom pointer cursor */
+    /* cursor: url('/assets/images/ui/cursor-pointer.png') 4 0, pointer; */
+    cursor: var(--cursor-pointer);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
 input,
 textarea {
     font-family: inherit;
+}
+
+input[type="range"] {
+    cursor: grab;
+}
+
+input[type="range"]:active {
+    cursor: grabbing;
 }
 
 img {
@@ -53,4 +88,42 @@ img {
 a {
     color: inherit;
     text-decoration: none;
+    cursor: var(--cursor-pointer);
 }
+
+/* ========== INTERACTIVE ELEMENTS ========== */
+.interactive,
+[role="button"] {
+    cursor: var(--cursor-pointer);
+}
+
+/* ========== SELECTION STYLING ========== */
+::selection {
+    background: var(--color-gold);
+    color: var(--color-bg-dark);
+}
+
+::-moz-selection {
+    background: var(--color-gold);
+    color: var(--color-bg-dark);
+}
+
+/* ========== SCROLLBAR STYLING ========== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-gold-dark);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gold);
+}
+

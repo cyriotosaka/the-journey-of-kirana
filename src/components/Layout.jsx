@@ -15,12 +15,16 @@ import HealthBar from './HUD/HealthBar';
 import InventoryBar from './HUD/InventoryBar';
 import useGameStore from '../stores/useGameStore';
 import { useGameState } from '../hooks/useGameState';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import '../styles/Layout.css';
 
 const Layout = () => {
     useGameState(); // Initialize event listeners
 
     const [gameStarted, setGameStarted] = useState(false);
+    
+    // Initialize keyboard shortcuts
+    useKeyboardShortcuts(gameStarted);
     const isPaused = useGameStore((state) => state.isPaused);
     const showHUD = useGameStore((state) => state.ui.showHUD);
     const showMenu = useGameStore((state) => state.ui.showMenu);
