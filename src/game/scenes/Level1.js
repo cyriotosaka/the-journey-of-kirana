@@ -235,11 +235,20 @@ export class Level1 extends Phaser.Scene {
     }
 
     setupAudio() {
-        if (this.cache.audio.exists('bgm_forest')) {
-            this.bgm = this.sound.add('bgm_forest', { volume: 0.3, loop: true });
+        // Get volume settings from React store (via window)
+        const bgmVolume = window.__KIRANA_SETTINGS__?.bgmVolume ?? 0.5;
+        
+        // Background Music - Level 1
+        if (this.cache.audio.exists('bgm_level1')) {
+            this.bgm = this.sound.add('bgm_level1', { 
+                volume: bgmVolume, 
+                loop: true 
+            });
             this.bgm.play();
+            console.log('🎵 BGM Level 1 playing');
         }
 
+        // Ambient sound (jika ada)
         if (this.cache.audio.exists('amb_forest')) {
             this.ambience = this.sound.add('amb_forest', { volume: 0.2, loop: true });
             this.ambience.play();
@@ -253,6 +262,14 @@ export class Level1 extends Phaser.Scene {
         EventBus.on(EVENTS.DIALOG_SHOW, this.onDialogShow, this);
         EventBus.on(EVENTS.DIALOG_HIDE, this.onDialogHide, this);
         EventBus.on('enemy:chase_started', this.onChaseStarted, this);
+        
+        // Listen for volume changes from React settings
+        EventBus.on('settings:volume_changed', this.onVolumeChanged, this);
+    }
+    
+    onVolumeChanged(data) {
+        if (this.bgm) this.bgm.setVolume(data.bgm);
+        if (this.ambience) this.ambience.setVolume(data.sfx * 0.2);
     }
 
     onGameOver(data) {
@@ -325,6 +342,7 @@ export class Level1 extends Phaser.Scene {
         EventBus.off(EVENTS.DIALOG_SHOW, this.onDialogShow, this);
         EventBus.off(EVENTS.DIALOG_HIDE, this.onDialogHide, this);
         EventBus.off('enemy:chase_started', this.onChaseStarted, this);
+        EventBus.off('settings:volume_changed', this.onVolumeChanged, this);
 
         if (this.bgm) this.bgm.stop();
         if (this.ambience) this.ambience.stop();

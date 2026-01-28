@@ -9,10 +9,29 @@ import { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import { EventBus, GameEvents } from '../../game/systems/EventBus';
 import gameConfig from '../../game/config/GameConfig';
+import { useSettingsStore } from '../../stores/useGameStore';
 
 const PhaserContainer = () => {
     const gameRef = useRef(null);
     const containerRef = useRef(null);
+    
+    // Get settings from store
+    const bgmVolume = useSettingsStore((state) => state.bgmVolume);
+    const sfxVolume = useSettingsStore((state) => state.sfxVolume);
+    
+    // Sync settings to window for Phaser access
+    useEffect(() => {
+        window.__KIRANA_SETTINGS__ = {
+            bgmVolume: bgmVolume / 100, // Convert 0-100 to 0-1
+            sfxVolume: sfxVolume / 100,
+        };
+        
+        // Emit volume change to Phaser
+        EventBus.emit('settings:volume_changed', {
+            bgm: bgmVolume / 100,
+            sfx: sfxVolume / 100,
+        });
+    }, [bgmVolume, sfxVolume]);
 
     useEffect(() => {
         if (!containerRef.current) return;

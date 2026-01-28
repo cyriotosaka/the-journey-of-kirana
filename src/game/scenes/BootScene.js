@@ -25,6 +25,17 @@ export class BootScene extends Phaser.Scene {
         // ============================================
         this.createPlaceholderTextures();
 
+        // ============================================
+        // LOAD BGM AUDIO
+        // ============================================
+        this.load.audio('bgm_level1', 'assets/audio/bgm/bgm_level1.mp3');
+        this.load.audio('bgm_level2', 'assets/audio/bgm/bgm_level2.mp3');
+        this.load.audio('bgm_level3', 'assets/audio/bgm/bgm_level3.mp3');
+        this.load.audio('bgm_level4', 'assets/audio/bgm/bgm_level4.mp3');
+        this.load.audio('bgm_level5', 'assets/audio/bgm/bgm_level5.mp3');
+        this.load.audio('bgm_level6', 'assets/audio/bgm/bgm_level6.mp3');
+        this.load.audio('bgm_level7', 'assets/audio/bgm/bgm_level7.mp3');
+
         this.load.on('progress', this.onLoadProgress, this);
         this.load.on('complete', this.onLoadComplete, this);
     }
