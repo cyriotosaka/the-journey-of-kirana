@@ -347,10 +347,8 @@ export class Player extends Phaser.Physics.Matter.Sprite {
             this.tryInteract();
         }
 
-        // Check pause input
-        if (this.inputManager.isPauseJustPressed()) {
-            EventBus.emit(EVENTS.GAME_PAUSED);
-        }
+        // NOTE: Pause is now handled by React's useKeyboardShortcuts hook
+        // to avoid double-triggering and ensure UI state stays in sync
 
         // Update state machine
         this.stateMachine.update(delta);

@@ -46,11 +46,11 @@ export const useKeyboardShortcuts = (gameStarted = false) => {
                 e.preventDefault();
                 toggleMenu();
 
-                // Notify Phaser about pause state
+                // Notify Phaser about pause state (use correct event names!)
                 if (!showMenu) {
-                    EventBus.emit('game:pause');
+                    EventBus.emit('game:paused');  // Was: game:pause
                 } else {
-                    EventBus.emit('game:resume');
+                    EventBus.emit('game:resumed'); // Was: game:resume
                 }
             }
 

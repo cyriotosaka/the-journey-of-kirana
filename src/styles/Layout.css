@@ -27,8 +27,9 @@
     pointer-events: none; /* Allow clicks to pass through */
 }
 
-.layer-hud > * {
-    pointer-events: auto; /* Re-enable clicks on HUD elements */
+/* Re-enable clicks on ALL HUD elements (not just direct children) */
+.layer-hud * {
+    pointer-events: auto;
 }
 
 .layer-dialog {
@@ -77,6 +78,9 @@
     justify-content: center;
     cursor: pointer;
     transition: all var(--transition-fast);
+    z-index: 100;
+    pointer-events: auto !important;
+    position: relative;
 }
 
 .pause-button:hover {

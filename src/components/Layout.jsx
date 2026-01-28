@@ -13,11 +13,13 @@ import MainMenu from './UI/MainMenu';
 import DialogBox from './UI/DialogBox';
 import ToastNotification from './UI/ToastNotification';
 import SceneTransition from './UI/SceneTransition';
+import SettingsPanel from './UI/SettingsPanel';
 import HealthBar from './HUD/HealthBar';
 import InventoryBar from './HUD/InventoryBar';
 import useGameStore from '../stores/useGameStore';
 import { useGameState } from '../hooks/useGameState';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
+import { EventBus } from '../game/systems/EventBus';
 import '../styles/Layout.css';
 
 const Layout = () => {
@@ -28,12 +30,16 @@ const Layout = () => {
         return sessionStorage.getItem('kirana-game-started') === 'true';
     });
     
+    // Settings panel state for pause menu
+    const [showSettings, setShowSettings] = useState(false);
+    
     // Initialize keyboard shortcuts
     useKeyboardShortcuts(gameStarted);
     const isPaused = useGameStore((state) => state.isPaused);
     const showHUD = useGameStore((state) => state.ui.showHUD);
     const showMenu = useGameStore((state) => state.ui.showMenu);
     const toggleMenu = useGameStore((state) => state.toggleMenu);
+    const setPaused = useGameStore((state) => state.setPaused);
 
     // ========== HANDLE START GAME ==========
     const handleStartGame = () => {
@@ -51,6 +57,17 @@ const Layout = () => {
     // ========== PAUSE MENU TOGGLE ==========
     const handlePauseToggle = () => {
         toggleMenu();
+        
+        // Emit to Phaser and sync isPaused state
+        if (!showMenu) {
+            // Opening pause menu
+            setPaused(true);
+            EventBus.emit('game:paused');
+        } else {
+            // Closing pause menu
+            setPaused(false);
+            EventBus.emit('game:resumed');
+        }
     };
 
     return (
@@ -103,30 +120,29 @@ const Layout = () => {
             {gameStarted && showMenu && (
                 <div className="layer layer-pause-menu">
                     <div className="pause-menu-overlay">
-                        <div className="pause-menu-container">
-                            <h2 className="pause-title">PAUSE</h2>
+                        {!showSettings ? (
+                            <div className="pause-menu-container">
+                                <h2 className="pause-title">PAUSE</h2>
 
-                            <div className="pause-options">
-                                <button onClick={handlePauseToggle}>
-                                    Lanjutkan
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        // TODO: Show settings
-                                        console.log('Settings');
-                                    }}
-                                >
-                                    Pengaturan
-                                </button>
-                                <button onClick={handleBackToMenu}>
-                                    Kembali ke Menu
-                                </button>
-                            </div>
+                                <div className="pause-options">
+                                    <button onClick={handlePauseToggle}>
+                                        Lanjutkan
+                                    </button>
+                                    <button onClick={() => setShowSettings(true)}>
+                                        Pengaturan
+                                    </button>
+                                    <button onClick={handleBackToMenu}>
+                                        Kembali ke Menu
+                                    </button>
+                                </div>
 
-                            <div className="pause-controls">
-                                <p>ESC untuk kembali ke game</p>
+                                <div className="pause-controls">
+                                    <p>ESC untuk kembali ke game</p>
+                                </div>
                             </div>
-                        </div>
+                        ) : (
+                            <SettingsPanel onClose={() => setShowSettings(false)} />
+                        )}
                     </div>
                 </div>
             )}
