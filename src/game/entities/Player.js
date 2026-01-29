@@ -103,13 +103,9 @@ export class Player extends Phaser.Physics.Matter.Sprite {
             alpha: this.alpha,
         });
         
-        // DEBUG: Force visible scale and visual marker
-        this.setScale(0.2); // Increase from 0.05 to 0.2 for testing
-        
-        // Visual debug marker (Red Box) at spawn position
-        // NOTE: Sprite cannot use .add(), so we just place it in the scene
-        const debugG = scene.add.rectangle(x, y, 40, 60, 0xff0000, 0.5);
-        debugG.setDepth(100); // Ensure on top
+        // Scale down sprite (adjusted for visibility)
+        this.setScale(0.18); 
+        this.setOrigin(0.5);
     }
 
     setupPhysics() {

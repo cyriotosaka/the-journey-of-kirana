@@ -41,50 +41,50 @@ export class Level1 extends Phaser.Scene {
 
     createBackground() {
         const { width, height } = this.cameras.main;
+        const worldWidth = width * 3; // Estimasi panjang level
 
-        // ========== LAYER 1: SKY (Furthest back, no scroll) ==========
+        // ========== LAYER 1: SKY (Fixed) ==========
         if (this.textures.exists('bg_level1_sky')) {
             this.bgSky = this.add.image(width / 2, height / 2, 'bg_level1_sky')
                 .setScrollFactor(0)
                 .setDepth(-50)
                 .setDisplaySize(width, height);
         } else {
-            // Fallback dark sky
-            this.add.rectangle(0, 0, width, height, 0x0a0a15)
-                .setOrigin(0).setScrollFactor(0).setDepth(-50);
+            this.add.rectangle(width / 2, height / 2, width, height, 0x0a0a15)
+                .setScrollFactor(0).setDepth(-50);
         }
 
-        // ========== LAYER 2: FOREST (Slow parallax) ==========
+        // ========== LAYER 2: FOREST (Stretched, scroll 0.2) ==========
         if (this.textures.exists('bg_level1_forest')) {
-            this.bgForest = this.add.tileSprite(0, 0, width, height, 'bg_level1_forest')
-                .setOrigin(0)
-                .setScrollFactor(0)
-                .setDepth(-40);
+            this.bgForest = this.add.image(worldWidth / 2, height / 2, 'bg_level1_forest')
+                .setScrollFactor(0.2)
+                .setDepth(-40)
+                .setDisplaySize(worldWidth, height);
         }
 
-        // ========== LAYER 3: MID (Medium parallax) ==========
+        // ========== LAYER 3: MID (Stretched, scroll 0.5) ==========
         if (this.textures.exists('bg_level1_mid')) {
-            this.bgMid = this.add.tileSprite(0, 0, width, height, 'bg_level1_mid')
-                .setOrigin(0)
-                .setScrollFactor(0)
-                .setDepth(-30);
+            this.bgMid = this.add.image(worldWidth / 2, height / 2, 'bg_level1_mid')
+                .setScrollFactor(0.5)
+                .setDepth(-30)
+                .setDisplaySize(worldWidth, height);
         }
 
-        // ========== LAYER 4: FRAME (Faster parallax, closer trees) ==========
+        // ========== LAYER 4: FRAME (Stretched, scroll 0.8) ==========
         if (this.textures.exists('bg_level1_frame')) {
-            this.bgFrame = this.add.tileSprite(0, 0, width, height, 'bg_level1_frame')
-                .setOrigin(0)
-                .setScrollFactor(0)
-                .setDepth(-20);
+            this.bgFrame = this.add.image(worldWidth / 2, height / 2, 'bg_level1_frame')
+                .setScrollFactor(0.8)
+                .setDepth(-20)
+                .setDisplaySize(worldWidth, height);
         }
 
-        // ========== LAYER 5: FOG (Foreground overlay, slowest) ==========
+        // ========== LAYER 5: FOG (Stretched, scroll 1.0) ==========
         if (this.textures.exists('bg_level1_fog')) {
-            this.bgFog = this.add.tileSprite(0, 0, width, height, 'bg_level1_fog')
-                .setOrigin(0)
-                .setScrollFactor(0)
-                .setDepth(100) // In front of everything for fog effect
-                .setAlpha(0.6); // Semi-transparent fog
+            this.bgFog = this.add.image(worldWidth / 2, height / 2, 'bg_level1_fog')
+                .setScrollFactor(1)
+                .setDepth(100)
+                .setAlpha(0.6)
+                .setDisplaySize(worldWidth, height);
         }
     }
 
@@ -119,7 +119,7 @@ export class Level1 extends Phaser.Scene {
 
     createPlaceholderLevel() {
         const { width, height } = this.cameras.main;
-        const groundY = height - 80;
+        const groundY = height - 200; // Raised to avoid HUD overlap
 
         // Ground
         this.matter.add.rectangle(width, groundY + 40, width * 4, 80, {
@@ -377,19 +377,7 @@ export class Level1 extends Phaser.Scene {
         const camX = this.cameras.main.scrollX;
         const time = this.time.now;
         
-        // Layer 2: Forest (very slow - distant)
-        if (this.bgForest) this.bgForest.tilePositionX = camX * 0.05;
-        
-        // Layer 3: Mid (slow)
-        if (this.bgMid) this.bgMid.tilePositionX = camX * 0.15;
-        
-        // Layer 4: Frame (medium - closer trees)
-        if (this.bgFrame) this.bgFrame.tilePositionX = camX * 0.3;
-        
-        // Layer 5: Fog (slow drift + camera follow)
-        if (this.bgFog) {
-            this.bgFog.tilePositionX = camX * 0.02 + time * 0.01; // Slow auto-drift
-        }
+        // Parallax updates removed (handled by scrollFactor)
     }
 
     cleanup() {
