@@ -39,6 +39,46 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('bgm_level7', 'assets/audio/bgm/bgm_level7.mp3');
 
         // ============================================
+        // LOAD KIRANA CHARACTER SPRITESHEETS
+        // ============================================
+        const kiranaPath = 'assets/images/characters/kirana/';
+        
+        // Each sprite has different frame counts and layouts
+        // Format: { key, file, frameWidth, frameHeight, frameCount }
+        const kiranaSprites = [
+            { key: 'kirana_idle', file: 'kirana_idle.png', cols: 6, rows: 1 },
+            { key: 'kirana_walk', file: 'kirana_walk.png', cols: 5, rows: 2 },
+            { key: 'kirana_run', file: 'kirana_run.png', cols: 6, rows: 1 },
+            { key: 'kirana_jump', file: 'kirana_jump.png', cols: 7, rows: 1 },
+            { key: 'kirana_fall', file: 'kirana_fall.png', cols: 4, rows: 1 },
+            { key: 'kirana_landing', file: 'kirana_landing.png', cols: 6, rows: 1 },
+            { key: 'kirana_hurt', file: 'kirana_hurt.png', cols: 4, rows: 2 },
+            { key: 'kirana_death', file: 'kirana_death.png', cols: 4, rows: 2 },
+            { key: 'kirana_shell_enter', file: 'kirana_shell_enter.png', cols: 5, rows: 1 },
+            { key: 'kirana_shell_idle', file: 'kirana_shell_idle.png', cols: 2, rows: 1 },
+            { key: 'kirana_shell_exit', file: 'kirana_shell_exit.png', cols: 5, rows: 1 },
+        ];
+        
+        // Store sprite config for animation setup later
+        this.kiranaSpritesConfig = kiranaSprites;
+        
+        // Load each spritesheet as regular image first
+        // We'll calculate frame dimensions in create() after images load
+        kiranaSprites.forEach(sprite => {
+            this.load.image(sprite.key + '_sheet', kiranaPath + sprite.file);
+        });
+        
+        console.log('📦 Loading 11 Kirana sprite animations...');
+
+        // ============================================
+        // LOAD ITEMS
+        // ============================================
+        this.load.spritesheet('items', 'assets/images/items/items_sheet.png', {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+
+        // ============================================
         // LOAD LEVEL 1 BACKGROUND LAYERS (Parallax)
         // ============================================
         this.load.image('bg_level1_sky', 'assets/images/backgrounds/level1/layer1_sky.png');
@@ -286,7 +326,10 @@ export class BootScene extends Phaser.Scene {
     onLoadComplete() {
         this.loadingComplete = true;
 
-        // Create animations from placeholder textures
+        // Convert Kirana images to spritesheets
+        this.setupKiranaSpritesheets();
+
+        // Create animations from spritesheets
         this.createAnimations();
 
         this.loadingText.setText('Siap!');
@@ -295,6 +338,54 @@ export class BootScene extends Phaser.Scene {
         this.time.delayedCall(500, () => {
             this.startGame();
         });
+    }
+
+    /**
+     * Convert loaded Kirana images into proper spritesheets
+     * This calculates frame dimensions from image size and column/row counts
+     */
+    setupKiranaSpritesheets() {
+        if (!this.kiranaSpritesConfig) {
+            console.warn('⚠️ Kirana sprite config not found, using placeholders');
+            return;
+        }
+
+        console.log('🔧 Setting up Kirana spritesheets...');
+
+        this.kiranaSpritesConfig.forEach(config => {
+            const sheetKey = config.key + '_sheet';
+            
+            // Check if the image was loaded
+            if (!this.textures.exists(sheetKey)) {
+                console.warn(`⚠️ Texture ${sheetKey} not found`);
+                return;
+            }
+
+            // Get image dimensions
+            const texture = this.textures.get(sheetKey);
+            const source = texture.getSourceImage();
+            const imgWidth = source.width;
+            const imgHeight = source.height;
+
+            // Calculate frame dimensions
+            const frameWidth = Math.floor(imgWidth / config.cols);
+            const frameHeight = Math.floor(imgHeight / config.rows);
+            const totalFrames = config.cols * config.rows;
+
+            console.log(`  📦 ${config.key}: ${imgWidth}x${imgHeight} → ${frameWidth}x${frameHeight} (${totalFrames} frames)`);
+
+            // Remove the sheet key and create a new spritesheet from the same image
+            // We need to re-add the texture as a spritesheet
+            const path = 'assets/images/characters/kirana/' + config.file;
+            
+            // Create spritesheet from the loaded image
+            this.textures.addSpriteSheet(config.key, source, {
+                frameWidth: frameWidth,
+                frameHeight: frameHeight,
+            });
+        });
+
+        console.log('✅ Kirana spritesheets ready');
     }
 
     createAnimations() {
@@ -331,16 +422,21 @@ export class BootScene extends Phaser.Scene {
             // If texture doesn't exist, skip animation
         };
         
-        // ========== PLAYER ANIMATIONS ==========
-        createAnim('kirana_idle', 'kirana', 0, 3, 6, -1);
-        createAnim('kirana_walk', 'kirana', 4, 7, 10, -1);
-        createAnim('kirana_jump', 'kirana', 8, 9, 10, 0);
-        createAnim('kirana_fall', 'kirana', 10, 11, 8, -1);
-        createAnim('kirana_shell_enter', 'kirana', 12, 15, 12, 0);
-        createAnim('kirana_shell_idle', 'kirana', 15, 16, 4, -1);
-        createAnim('kirana_shell_exit', 'kirana', 15, 12, 12, 0);
-        createAnim('kirana_hurt', 'kirana', 17, 18, 10, 0);
-        createAnim('kirana_death', 'kirana', 19, 22, 8, 0);
+        // ========== PLAYER ANIMATIONS (from separate spritesheets) ==========
+        // Each animation uses its own spritesheet key
+        // Frame counts: idle(6), walk(10), run(6), jump(7), fall(4), landing(6), hurt(8), death(8), shell_enter(5), shell_idle(2), shell_exit(5)
+        
+        createAnim('kirana_idle', 'kirana_idle', 0, 5, 8, -1);           // 6 frames
+        createAnim('kirana_walk', 'kirana_walk', 0, 9, 12, -1);          // 10 frames
+        createAnim('kirana_run', 'kirana_run', 0, 5, 14, -1);            // 6 frames
+        createAnim('kirana_jump', 'kirana_jump', 0, 6, 12, 0);           // 7 frames
+        createAnim('kirana_fall', 'kirana_fall', 0, 3, 10, -1);          // 4 frames
+        createAnim('kirana_landing', 'kirana_landing', 0, 5, 15, 0);     // 6 frames
+        createAnim('kirana_hurt', 'kirana_hurt', 0, 7, 12, 0);           // 8 frames
+        createAnim('kirana_death', 'kirana_death', 0, 7, 10, 0);         // 8 frames
+        createAnim('kirana_shell_enter', 'kirana_shell_enter', 0, 4, 12, 0);  // 5 frames
+        createAnim('kirana_shell_idle', 'kirana_shell_idle', 0, 1, 4, -1);    // 2 frames
+        createAnim('kirana_shell_exit', 'kirana_shell_exit', 0, 4, 12, 0);    // 5 frames
         
         // ========== ENEMY ANIMATIONS ==========
         createAnim('galuh_idle', 'galuh', 0, 3, 4, -1);

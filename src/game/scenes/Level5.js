@@ -228,9 +228,10 @@ export class Level5 extends Phaser.Scene {
     }
 
     setupAudio() {
-        if (this.cache.audio.exists('bgm_boss')) {
-            this.bgm = this.sound.add('bgm_boss', { volume: 0.35, loop: true });
+        if (this.cache.audio.exists('bgm_level5')) {
+            this.bgm = this.sound.add('bgm_level5', { volume: 0.35, loop: true });
             this.bgm.play();
+            console.log('🎵 BGM Level 5 playing');
         }
     }
 

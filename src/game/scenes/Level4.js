@@ -203,9 +203,10 @@ export class Level4 extends Phaser.Scene {
     }
 
     setupAudio() {
-        if (this.cache.audio.exists('bgm_swamp')) {
-            this.bgm = this.sound.add('bgm_swamp', { volume: 0.25, loop: true });
+        if (this.cache.audio.exists('bgm_level4')) {
+            this.bgm = this.sound.add('bgm_level4', { volume: 0.25, loop: true });
             this.bgm.play();
+            console.log('🎵 BGM Level 4 playing');
         }
     }
 

@@ -53,47 +53,50 @@ export class Level2 extends Phaser.Scene {
 
     createBackground() {
         const { width, height } = this.cameras.main;
+        
+        // Level world bounds (3x screen width for scrolling)
+        const worldWidth = width * 3;
 
-        // ========== LAYER 1: Back layer (furthest, slowest scroll) ==========
+        // ========== LAYER 1: Sky/Back (furthest - no movement) ==========
         if (this.textures.exists('bg_level2_layer1')) {
-            this.bgLayer1 = this.add.tileSprite(0, 0, width, height, 'bg_level2_layer1')
-                .setOrigin(0)
-                .setScrollFactor(0)
+            // Static layer covering full screen, no parallax
+            this.bgLayer1 = this.add.image(width / 2, height / 2, 'bg_level2_layer1')
+                .setScrollFactor(0)  // Fixed to camera
                 .setDepth(-50)
-                .setDisplaySize(width, height);
+                .setDisplaySize(width, height);  // Scale to fill screen
+            console.log('✅ Level2: Layer 1 (sky) loaded');
         } else {
-            // Fallback dark background
-            this.add.rectangle(0, 0, width * 2, height, 0x0a0808)
-                .setOrigin(0)
+            this.add.rectangle(width / 2, height / 2, width, height, 0x1a1a2e)
                 .setScrollFactor(0)
                 .setDepth(-50);
+            console.warn('⚠️ Level2: Layer 1 texture not found');
         }
 
-        // ========== LAYER 2: Mid-back ==========
+        // ========== LAYER 2: Far trees (0.2 scroll factor) ==========
         if (this.textures.exists('bg_level2_layer2')) {
-            this.bgLayer2 = this.add.tileSprite(0, 0, width, height, 'bg_level2_layer2')
-                .setOrigin(0)
-                .setScrollFactor(0)
+            this.bgLayer2 = this.add.image(worldWidth / 2, height / 2, 'bg_level2_layer2')
+                .setScrollFactor(0.2)  // Slow parallax
                 .setDepth(-40)
-                .setDisplaySize(width, height);
+                .setDisplaySize(worldWidth, height);  // Stretch to world width
+            console.log('✅ Level2: Layer 2 (far trees) loaded');
         }
 
-        // ========== LAYER 3: Mid-front ==========
+        // ========== LAYER 3: Mid trees (0.5 scroll factor) ==========
         if (this.textures.exists('bg_level2_layer3')) {
-            this.bgLayer3 = this.add.tileSprite(0, 0, width, height, 'bg_level2_layer3')
-                .setOrigin(0)
-                .setScrollFactor(0)
+            this.bgLayer3 = this.add.image(worldWidth / 2, height / 2, 'bg_level2_layer3')
+                .setScrollFactor(0.5)  // Medium parallax
                 .setDepth(-30)
-                .setDisplaySize(width, height);
+                .setDisplaySize(worldWidth, height);
+            console.log('✅ Level2: Layer 3 (mid trees) loaded');
         }
 
-        // ========== LAYER 4: Front layer (closest, fastest scroll) ==========
+        // ========== LAYER 4: Front trees (0.8 scroll factor) ==========
         if (this.textures.exists('bg_level2_layer4')) {
-            this.bgLayer4 = this.add.tileSprite(0, 0, width, height, 'bg_level2_layer4')
-                .setOrigin(0)
-                .setScrollFactor(0)
+            this.bgLayer4 = this.add.image(worldWidth / 2, height / 2, 'bg_level2_layer4')
+                .setScrollFactor(0.8)  // Fast parallax
                 .setDepth(-20)
-                .setDisplaySize(width, height);
+                .setDisplaySize(worldWidth, height);
+            console.log('✅ Level2: Layer 4 (front trees) loaded');
         }
     }
 
@@ -266,10 +269,11 @@ export class Level2 extends Phaser.Scene {
     }
 
     createLighting() {
-        // Much darker atmosphere
+        // Dark atmosphere but visible enough to see background
+        // Note: ambientLight controls visibility (0.45 = 55% visible, 45% dark)
         this.lightingSystem = new LightingSystem(this, {
-            ambientLight: 0.06,        // Very dark
-            darknessColor: 0x050305,   // Almost black with red tint
+            ambientLight: 1,        // Increased significantly for background visibility
+            darknessColor: 0x101015,   // Dark blue-black tint
         });
 
         // Smaller player light (claustrophobic)
@@ -328,16 +332,11 @@ export class Level2 extends Phaser.Scene {
     }
 
     setupAudio() {
-        // Darker, more oppressive music
-        if (this.cache.audio.exists('bgm_dungeon')) {
-            this.bgm = this.sound.add('bgm_dungeon', { volume: 0.25, loop: true });
+        // Level 2 BGM
+        if (this.cache.audio.exists('bgm_level2')) {
+            this.bgm = this.sound.add('bgm_level2', { volume: 0.25, loop: true });
             this.bgm.play();
-        }
-
-        // Kitchen ambience (creaking, dripping)
-        if (this.cache.audio.exists('amb_kitchen')) {
-            this.ambience = this.sound.add('amb_kitchen', { volume: 0.3, loop: true });
-            this.ambience.play();
+            console.log('🎵 BGM Level 2 playing');
         }
     }
 
@@ -437,14 +436,8 @@ export class Level2 extends Phaser.Scene {
         this.enemies.forEach((enemy) => enemy.update(time, delta));
         this.lightingSystem.update(time, delta);
 
-        // ========== PARALLAX SCROLLING ==========
-        const camX = this.cameras.main.scrollX;
-        
-        // Each layer scrolls at different speed for depth effect
-        if (this.bgLayer1) this.bgLayer1.tilePositionX = camX * 0.1;  // Slowest
-        if (this.bgLayer2) this.bgLayer2.tilePositionX = camX * 0.3;
-        if (this.bgLayer3) this.bgLayer3.tilePositionX = camX * 0.5;
-        if (this.bgLayer4) this.bgLayer4.tilePositionX = camX * 0.7;  // Fastest
+        // Note: Parallax is now handled automatically via scrollFactor
+        // No manual tilePositionX updates needed
     }
 
     cleanup() {

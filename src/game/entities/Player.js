@@ -45,7 +45,8 @@ export const PLAYER_CONFIG = {
 
 export class Player extends Phaser.Physics.Matter.Sprite {
     constructor(scene, x, y) {
-        super(scene.matter.world, x, y, 'kirana', 0);
+        // Use kirana_idle as initial texture (each animation has its own spritesheet)
+        super(scene.matter.world, x, y, 'kirana_idle', 0);
 
         scene.add.existing(this);
         this.scene = scene;
@@ -86,6 +87,29 @@ export class Player extends Phaser.Physics.Matter.Sprite {
 
         // Set depth (from config)
         this.setDepth(PLAYER_CONFIG.DEPTH);
+        
+        // Scale down sprite (original ~1500px height → ~75px display)
+        this.setScale(0.05);
+        
+        // Debug: Check if sprite is visible
+        console.log('👸 Player created:', {
+            x: this.x,
+            y: this.y,
+            texture: this.texture?.key,
+            visible: this.visible,
+            scale: this.scale,
+            width: this.displayWidth,
+            height: this.displayHeight,
+            alpha: this.alpha,
+        });
+        
+        // DEBUG: Force visible scale and visual marker
+        this.setScale(0.2); // Increase from 0.05 to 0.2 for testing
+        
+        // Visual debug marker (Red Box) at spawn position
+        // NOTE: Sprite cannot use .add(), so we just place it in the scene
+        const debugG = scene.add.rectangle(x, y, 40, 60, 0xff0000, 0.5);
+        debugG.setDepth(100); // Ensure on top
     }
 
     setupPhysics() {

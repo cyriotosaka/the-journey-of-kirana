@@ -23,7 +23,7 @@ const LEVELS = [
 const DevMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
     const currentScene = useGameStore((state) => state.currentScene);
-    const setHealth = useGameStore((state) => state.setHealth);
+    const updatePlayerHealth = useGameStore((state) => state.updatePlayerHealth);
     const addItem = useGameStore((state) => state.addItem);
 
     // Only show in development
@@ -36,8 +36,9 @@ const DevMenu = () => {
     };
 
     const handleFullHealth = () => {
-        setHealth(100);
+        updatePlayerHealth(100, 100);
         EventBus.emit('dev:set_health', 100);
+        console.log('❤️ Dev: Full health restored');
     };
 
     const handleAddTestItem = () => {

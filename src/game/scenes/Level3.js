@@ -200,9 +200,10 @@ export class Level3 extends Phaser.Scene {
     }
 
     setupAudio() {
-        if (this.cache.audio.exists('bgm_tension')) {
-            this.bgm = this.sound.add('bgm_tension', { volume: 0.3, loop: true });
+        if (this.cache.audio.exists('bgm_level3')) {
+            this.bgm = this.sound.add('bgm_level3', { volume: 0.3, loop: true });
             this.bgm.play();
+            console.log('🎵 BGM Level 3 playing');
         }
     }
 

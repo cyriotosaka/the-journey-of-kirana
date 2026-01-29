@@ -155,7 +155,9 @@ export class Level1 extends Phaser.Scene {
     }
 
     createPlayer() {
+        console.log('🏁 Level1: Creating player at', this.spawnX, this.spawnY);
         this.player = new Player(this, this.spawnX, this.spawnY);
+        console.log('✅ Level1: Player created instance');
     }
 
     createEnemies() {
@@ -240,7 +242,9 @@ export class Level1 extends Phaser.Scene {
         this.lightingSystem.addTorch(1550, height - 100, { radius: 85 });
         this.lightingSystem.addTorch(2100, height - 100, { radius: 90 });
 
-        this.lightingSystem.fadeFromBlack(2000, 0.12);
+        // DEBUG: Disable darkness to check sprite visibility
+        this.lightingSystem.setAmbientLight(1); 
+        // this.lightingSystem.fadeFromBlack(2000, 0.12);
     }
 
     setupCamera() {
