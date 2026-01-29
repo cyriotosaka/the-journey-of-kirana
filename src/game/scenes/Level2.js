@@ -54,19 +54,46 @@ export class Level2 extends Phaser.Scene {
     createBackground() {
         const { width, height } = this.cameras.main;
 
-        // Dark interior background
-        this.add.rectangle(0, 0, width * 2, height, 0x0a0808)
-            .setOrigin(0)
-            .setScrollFactor(0)
-            .setDepth(-10);
-
-        // Wall texture (if exists)
-        if (this.textures.exists('bg_kitchen_wall')) {
-            this.add.tileSprite(0, 0, width * 2, height, 'bg_kitchen_wall')
+        // ========== LAYER 1: Back layer (furthest, slowest scroll) ==========
+        if (this.textures.exists('bg_level2_layer1')) {
+            this.bgLayer1 = this.add.tileSprite(0, 0, width, height, 'bg_level2_layer1')
                 .setOrigin(0)
-                .setScrollFactor(0.1)
-                .setDepth(-9)
-                .setAlpha(0.5);
+                .setScrollFactor(0)
+                .setDepth(-50)
+                .setDisplaySize(width, height);
+        } else {
+            // Fallback dark background
+            this.add.rectangle(0, 0, width * 2, height, 0x0a0808)
+                .setOrigin(0)
+                .setScrollFactor(0)
+                .setDepth(-50);
+        }
+
+        // ========== LAYER 2: Mid-back ==========
+        if (this.textures.exists('bg_level2_layer2')) {
+            this.bgLayer2 = this.add.tileSprite(0, 0, width, height, 'bg_level2_layer2')
+                .setOrigin(0)
+                .setScrollFactor(0)
+                .setDepth(-40)
+                .setDisplaySize(width, height);
+        }
+
+        // ========== LAYER 3: Mid-front ==========
+        if (this.textures.exists('bg_level2_layer3')) {
+            this.bgLayer3 = this.add.tileSprite(0, 0, width, height, 'bg_level2_layer3')
+                .setOrigin(0)
+                .setScrollFactor(0)
+                .setDepth(-30)
+                .setDisplaySize(width, height);
+        }
+
+        // ========== LAYER 4: Front layer (closest, fastest scroll) ==========
+        if (this.textures.exists('bg_level2_layer4')) {
+            this.bgLayer4 = this.add.tileSprite(0, 0, width, height, 'bg_level2_layer4')
+                .setOrigin(0)
+                .setScrollFactor(0)
+                .setDepth(-20)
+                .setDisplaySize(width, height);
         }
     }
 
@@ -321,6 +348,29 @@ export class Level2 extends Phaser.Scene {
         EventBus.on(EVENTS.DIALOG_SHOW, this.onDialogShow, this);
         EventBus.on(EVENTS.DIALOG_HIDE, this.onDialogHide, this);
         EventBus.on('enemy:chase_started', this.onChaseStarted, this);
+
+        // ========== DEV EVENTS ==========
+        EventBus.on('dev:switch_level', this.onDevSwitchLevel, this);
+        EventBus.on('dev:set_health', this.onDevSetHealth, this);
+        EventBus.on('dev:toggle_invincible', this.onDevToggleInvincible, this);
+    }
+
+    // ========== DEV HANDLERS ==========
+    onDevSwitchLevel(levelKey) {
+        console.log(`🚀 Switching to ${levelKey}`);
+        this.cleanup();
+        this.scene.start(levelKey);
+    }
+
+    onDevSetHealth(health) {
+        if (this.player) this.player.currentHealth = health;
+    }
+
+    onDevToggleInvincible() {
+        if (this.player) {
+            this.player.isInvincible = !this.player.isInvincible;
+            console.log(`🛡️ Invincible: ${this.player.isInvincible}`);
+        }
     }
 
     onGameOver(data) {
@@ -386,6 +436,15 @@ export class Level2 extends Phaser.Scene {
         this.player.update(time, delta);
         this.enemies.forEach((enemy) => enemy.update(time, delta));
         this.lightingSystem.update(time, delta);
+
+        // ========== PARALLAX SCROLLING ==========
+        const camX = this.cameras.main.scrollX;
+        
+        // Each layer scrolls at different speed for depth effect
+        if (this.bgLayer1) this.bgLayer1.tilePositionX = camX * 0.1;  // Slowest
+        if (this.bgLayer2) this.bgLayer2.tilePositionX = camX * 0.3;
+        if (this.bgLayer3) this.bgLayer3.tilePositionX = camX * 0.5;
+        if (this.bgLayer4) this.bgLayer4.tilePositionX = camX * 0.7;  // Fastest
     }
 
     cleanup() {

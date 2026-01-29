@@ -16,6 +16,7 @@ import SceneTransition from './UI/SceneTransition';
 import SettingsPanel from './UI/SettingsPanel';
 import HealthBar from './HUD/HealthBar';
 import InventoryBar from './HUD/InventoryBar';
+import DevMenu from './Dev/DevMenu';
 import useGameStore from '../stores/useGameStore';
 import { useGameState } from '../hooks/useGameState';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
@@ -37,9 +38,13 @@ const Layout = () => {
     useKeyboardShortcuts(gameStarted);
     const isPaused = useGameStore((state) => state.isPaused);
     const showHUD = useGameStore((state) => state.ui.showHUD);
+    const currentScene = useGameStore((state) => state.currentScene);
     const showMenu = useGameStore((state) => state.ui.showMenu);
     const toggleMenu = useGameStore((state) => state.toggleMenu);
     const setPaused = useGameStore((state) => state.setPaused);
+    
+    // HUD only shows when game is in actual level (not BootScene/loading)
+    const isInLevel = currentScene && currentScene !== 'BootScene';
 
     // ========== HANDLE START GAME ==========
     const handleStartGame = () => {
@@ -56,6 +61,7 @@ const Layout = () => {
 
     // ========== PAUSE MENU TOGGLE ==========
     const handlePauseToggle = () => {
+        console.log('🔴 Pause button clicked!', { showMenu, isPaused });
         toggleMenu();
         
         // Emit to Phaser and sync isPaused state
@@ -87,7 +93,7 @@ const Layout = () => {
             )}
 
             {/* ========== HUD OVERLAY ========== */}
-            {gameStarted && showHUD && !showMenu && (
+            {gameStarted && showHUD && !showMenu && isInLevel && (
                 <div className="layer layer-hud">
                     <div className="hud-top-left">
                         <HealthBar />
@@ -98,13 +104,10 @@ const Layout = () => {
                     </div>
 
                     <div className="hud-top-right">
-                        <button
-                            className="pause-button"
-                            onClick={handlePauseToggle}
-                            title="Pause (ESC)"
-                        >
-                            {isPaused ? '▶' : '⏸'}
-                        </button>
+                        <div className="pause-hint" title="Tekan ESC untuk Pause">
+                            <span className="key-hint">ESC</span>
+                            <span className="hint-label">Pause</span>
+                        </div>
                     </div>
                 </div>
             )}
@@ -152,6 +155,9 @@ const Layout = () => {
 
             {/* ========== TOAST NOTIFICATIONS ========== */}
             <ToastNotification />
+
+            {/* ========== DEV MENU (Only in development) ========== */}
+            {gameStarted && <DevMenu />}
         </div>
     );
 };

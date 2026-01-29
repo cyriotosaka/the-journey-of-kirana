@@ -20,14 +20,22 @@
 
 .layer-game {
     z-index: 1;
+    /* Allow clicks to pass through layer-game container */
+    pointer-events: none;
+}
+
+/* But re-enable pointer events on the actual Phaser canvas for game input */
+.layer-game canvas,
+.layer-game #phaser-container {
+    pointer-events: auto;
 }
 
 .layer-hud {
     z-index: 10;
-    pointer-events: none; /* Allow clicks to pass through */
+    pointer-events: none; /* Allow clicks to pass through HUD layer container */
 }
 
-/* Re-enable clicks on ALL HUD elements (not just direct children) */
+/* Re-enable clicks on ALL HUD interactive elements */
 .layer-hud * {
     pointer-events: auto;
 }
@@ -64,28 +72,35 @@
     transform: translateX(-50%);
 }
 
-/* Pause Button */
-.pause-button {
-    width: 48px;
-    height: 48px;
+/* Pause Hint (Keyboard) */
+.pause-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid var(--color-primary);
     border-radius: var(--radius-md);
-    color: var(--color-primary);
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    z-index: 100;
-    pointer-events: auto !important;
-    position: relative;
 }
 
-.pause-button:hover {
+.key-hint {
+    display: inline-block;
+    padding: 4px 10px;
     background: rgba(212, 175, 55, 0.2);
-    transform: scale(1.05);
+    border: 1px solid var(--color-primary);
+    border-radius: 4px;
+    color: var(--color-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.hint-label {
+    color: #aaa;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Pause Menu Overlay */

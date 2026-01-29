@@ -359,8 +359,11 @@ export class Player extends Phaser.Physics.Matter.Sprite {
     // ============================================
 
     destroy() {
-        this.scene.matter.world.off('collisionstart', this.onCollisionStart, this);
-        this.scene.matter.world.off('collisionend', this.onCollisionEnd, this);
+        // Safe cleanup - check if scene and matter still exist
+        if (this.scene && this.scene.matter && this.scene.matter.world) {
+            this.scene.matter.world.off('collisionstart', this.onCollisionStart, this);
+            this.scene.matter.world.off('collisionend', this.onCollisionEnd, this);
+        }
 
         if (this.inputManager) this.inputManager.destroy();
         if (this.flashTween) this.flashTween.stop();

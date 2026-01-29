@@ -7,11 +7,10 @@
 
 import Phaser from 'phaser';
 
-// Import scenes (akan dibuat oleh Member A & B)
-// import BootScene from '../scenes/BootScene';
-// import MainMenuScene from '../scenes/MainMenuScene';
-// import Level1 from '../scenes/Level1';
-// import GameOverScene from '../scenes/GameOverScene';
+// Import scenes
+import { BootScene } from '../scenes/BootScene';
+import { Level1 } from '../scenes/Level1';
+import { Level2 } from '../scenes/Level2';
 
 const gameConfig = {
     // ========== CORE CONFIG ==========
@@ -80,12 +79,10 @@ const gameConfig = {
     backgroundColor: '#000000',
 
     // ========== SCENES ==========
-    // TODO: Uncomment dan import scenes saat sudah dibuat
     scene: [
-        // BootScene,       // Loading screen
-        // MainMenuScene,   // Menu utama
-        // Level1,          // Level pertama
-        // GameOverScene    // Game over screen
+        BootScene,   // Loading screen → auto starts Level1
+        Level1,      // Level pertama
+        Level2,      // Level kedua
     ],
 
     // ========== INPUT ==========

@@ -7,9 +7,9 @@
 
 import { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
-import { EventBus, GameEvents } from '../../game/systems/EventBus';
+import { EventBus, EVENTS, GameEvents } from '../../game/systems/EventBus';
 import gameConfig from '../../game/config/GameConfig';
-import { useSettingsStore } from '../../stores/useGameStore';
+import useGameStore, { useSettingsStore } from '../../stores/useGameStore';
 
 const PhaserContainer = () => {
     const gameRef = useRef(null);
@@ -35,6 +35,14 @@ const PhaserContainer = () => {
 
     useEffect(() => {
         if (!containerRef.current) return;
+
+        // ========== LISTEN FOR SCENE CHANGES (before Phaser starts) ==========
+        const setCurrentScene = useGameStore.getState().setCurrentScene;
+        const handleSceneChange = (sceneName) => {
+            console.log('📍 Scene changed (PhaserContainer):', sceneName);
+            setCurrentScene(sceneName);
+        };
+        EventBus.on(EVENTS.SCENE_CHANGED, handleSceneChange);
 
         // ========== INITIALIZE PHASER GAME ==========
         const config = {

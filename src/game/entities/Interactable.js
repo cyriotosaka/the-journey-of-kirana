@@ -207,8 +207,8 @@ export class Item extends Interactable {
             usable: itemData.usable || false,
         };
 
-        // Floating animation
-        this.scene.tweens.add({
+        // Store reference to floating tween so we can stop it
+        this.floatingTween = this.scene.tweens.add({
             targets: this,
             y: y - 8,
             duration: 1200,
@@ -241,6 +241,12 @@ export class Item extends Interactable {
 
         this.playSound('sfx_pickup');
 
+        // IMPORTANT: Stop floating tween before pickup animation
+        if (this.floatingTween) {
+            this.floatingTween.stop();
+            this.floatingTween = null;
+        }
+
         // Pickup animation
         this.scene.tweens.add({
             targets: this,
@@ -255,6 +261,19 @@ export class Item extends Interactable {
         });
 
         return true;
+    }
+
+    destroy() {
+        // Stop any remaining tweens
+        if (this.floatingTween) {
+            this.floatingTween.stop();
+            this.floatingTween = null;
+        }
+        if (this.sparkle) {
+            this.sparkle.destroy();
+            this.sparkle = null;
+        }
+        super.destroy();
     }
 }
 

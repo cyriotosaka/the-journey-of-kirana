@@ -281,6 +281,7 @@ const useGameStore = create((set, get) => ({
         showMenu: false,
         showSettings: false,
         showHUD: true,
+        isLoading: false, // HUD shows immediately when game starts
     },
 
     toggleInventory: () =>
@@ -312,6 +313,14 @@ const useGameStore = create((set, get) => ({
             ui: {
                 ...state.ui,
                 showHUD: show,
+            },
+        })),
+
+    setLoading: (loading) =>
+        set((state) => ({
+            ui: {
+                ...state.ui,
+                isLoading: loading,
             },
         })),
 

@@ -44,13 +44,12 @@ export const useGameState = () => {
         const onItemCollected = (item) => {
             store.addItem(item);
 
-            // Tampilkan notifikasi singkat
-            store.showDialog({
-                character: 'Item Ditemukan',
-                text: `Kamu mendapatkan: ${item.name}`,
-                onClose: () => {
-                    setTimeout(() => store.hideDialog(), 2000);
-                },
+            // Show toast notification instead of blocking dialog
+            store.addToast({
+                id: Date.now(),
+                type: 'success',
+                message: `Mendapatkan: ${item.name}`,
+                duration: 2000,
             });
         };
 
@@ -107,6 +106,7 @@ export const useGameState = () => {
         };
 
         const onSceneChanged = (sceneName) => {
+            console.log('📍 Scene changed:', sceneName);
             store.setCurrentScene(sceneName);
         };
 
@@ -125,6 +125,12 @@ export const useGameState = () => {
         EventBus.on(EVENTS.GAME_OVER, onGameOver);
         EventBus.on(EVENTS.LEVEL_COMPLETE, onLevelComplete);
         EventBus.on(EVENTS.SCENE_CHANGED, onSceneChanged);
+        
+        // Loading complete listener
+        const onLoadingComplete = () => {
+            store.setLoading(false);
+        };
+        EventBus.on('loading:complete', onLoadingComplete);
 
         // ========== CLEANUP SAAT COMPONENT UNMOUNT ==========
         return () => {
@@ -142,6 +148,7 @@ export const useGameState = () => {
             EventBus.off(EVENTS.GAME_OVER, onGameOver);
             EventBus.off(EVENTS.LEVEL_COMPLETE, onLevelComplete);
             EventBus.off(EVENTS.SCENE_CHANGED, onSceneChanged);
+            EventBus.off('loading:complete', onLoadingComplete);
         };
     }, [store]);
 

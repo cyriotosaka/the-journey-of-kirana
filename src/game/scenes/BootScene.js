@@ -6,7 +6,7 @@
 
 import Phaser from 'phaser';
 import { AnimationManager } from '../systems/AnimationManager';
-import { GameEvents } from '../systems/EventBus';
+import { EventBus, GameEvents } from '../systems/EventBus';
 
 export class BootScene extends Phaser.Scene {
     constructor() {
@@ -15,6 +15,8 @@ export class BootScene extends Phaser.Scene {
 
     init() {
         this.loadingComplete = false;
+        // Tell React we're in BootScene (loading)
+        EventBus.emit('scene:changed', 'BootScene');
     }
 
     preload() {
@@ -35,6 +37,23 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('bgm_level5', 'assets/audio/bgm/bgm_level5.mp3');
         this.load.audio('bgm_level6', 'assets/audio/bgm/bgm_level6.mp3');
         this.load.audio('bgm_level7', 'assets/audio/bgm/bgm_level7.mp3');
+
+        // ============================================
+        // LOAD LEVEL 1 BACKGROUND LAYERS (Parallax)
+        // ============================================
+        this.load.image('bg_level1_sky', 'assets/images/backgrounds/level1/layer1_sky.png');
+        this.load.image('bg_level1_forest', 'assets/images/backgrounds/level1/layer2_forest.png');
+        this.load.image('bg_level1_mid', 'assets/images/backgrounds/level1/layer3_mid.png');
+        this.load.image('bg_level1_frame', 'assets/images/backgrounds/level1/layer4_frame.png');
+        this.load.image('bg_level1_fog', 'assets/images/backgrounds/level1/layer5_fog.png');
+
+        // ============================================
+        // LOAD LEVEL 2 BACKGROUND LAYERS (Parallax)
+        // ============================================
+        this.load.image('bg_level2_layer1', 'assets/images/backgrounds/level2/layer1.png');
+        this.load.image('bg_level2_layer2', 'assets/images/backgrounds/level2/layer2.png');
+        this.load.image('bg_level2_layer3', 'assets/images/backgrounds/level2/layer3.png');
+        this.load.image('bg_level2_layer4', 'assets/images/backgrounds/level2/layer4.png');
 
         this.load.on('progress', this.onLoadProgress, this);
         this.load.on('complete', this.onLoadComplete, this);
@@ -247,7 +266,7 @@ export class BootScene extends Phaser.Scene {
         for (let i = 0; i < 6; i++) {
             const x = i * 16;
             graphics.fillStyle(0xffffaa, 1);
-            graphics.fillStar(x + 8, 8, 4, 4, 2);
+            graphics.fillCircle(x + 8, 8, 4); // Simple circle instead of star
         }
         graphics.generateTexture('sparkle', 96, 16);
 
@@ -280,122 +299,60 @@ export class BootScene extends Phaser.Scene {
 
     createAnimations() {
         const anims = this.anims;
+        
+        // Helper: Check if texture is a spritesheet (has multiple frames)
+        const isSpritesheet = (key) => {
+            if (!this.textures.exists(key)) return false;
+            const texture = this.textures.get(key);
+            return texture.frameTotal > 1;
+        };
+        
+        // Helper: Create animation safely
+        const createAnim = (key, textureKey, startFrame, endFrame, frameRate, repeat) => {
+            if (anims.exists(key)) return;
+            
+            if (isSpritesheet(textureKey)) {
+                // Real spritesheet - use frame numbers
+                anims.create({
+                    key,
+                    frames: anims.generateFrameNumbers(textureKey, { start: startFrame, end: endFrame }),
+                    frameRate,
+                    repeat,
+                });
+            } else if (this.textures.exists(textureKey)) {
+                // Single image - create simple 1-frame animation
+                anims.create({
+                    key,
+                    frames: [{ key: textureKey, frame: 0 }],
+                    frameRate: 1,
+                    repeat: repeat === -1 ? -1 : 0,
+                });
+            }
+            // If texture doesn't exist, skip animation
+        };
+        
+        // ========== PLAYER ANIMATIONS ==========
+        createAnim('kirana_idle', 'kirana', 0, 3, 6, -1);
+        createAnim('kirana_walk', 'kirana', 4, 7, 10, -1);
+        createAnim('kirana_jump', 'kirana', 8, 9, 10, 0);
+        createAnim('kirana_fall', 'kirana', 10, 11, 8, -1);
+        createAnim('kirana_shell_enter', 'kirana', 12, 15, 12, 0);
+        createAnim('kirana_shell_idle', 'kirana', 15, 16, 4, -1);
+        createAnim('kirana_shell_exit', 'kirana', 15, 12, 12, 0);
+        createAnim('kirana_hurt', 'kirana', 17, 18, 10, 0);
+        createAnim('kirana_death', 'kirana', 19, 22, 8, 0);
+        
+        // ========== ENEMY ANIMATIONS ==========
+        createAnim('galuh_idle', 'galuh', 0, 3, 4, -1);
+        createAnim('galuh_walk', 'galuh', 4, 7, 6, -1);
+        createAnim('galuh_alert', 'galuh', 8, 11, 8, 0);
+        createAnim('galuh_chase', 'galuh', 12, 17, 10, -1);
+        createAnim('galuh_search', 'galuh', 18, 21, 5, -1);
+        
+        // ========== TORCH ANIMATION ==========
+        createAnim('torch_burn', 'torch', 0, 5, 10, -1);
 
-        // Player animations
-        if (!anims.exists('kirana_idle')) {
-            anims.create({
-                key: 'kirana_idle',
-                frames: anims.generateFrameNumbers('kirana', { start: 0, end: 3 }),
-                frameRate: 6,
-                repeat: -1,
-            });
-
-            anims.create({
-                key: 'kirana_walk',
-                frames: anims.generateFrameNumbers('kirana', { start: 4, end: 7 }),
-                frameRate: 10,
-                repeat: -1,
-            });
-
-            anims.create({
-                key: 'kirana_jump',
-                frames: anims.generateFrameNumbers('kirana', { start: 8, end: 9 }),
-                frameRate: 10,
-                repeat: 0,
-            });
-
-            anims.create({
-                key: 'kirana_fall',
-                frames: anims.generateFrameNumbers('kirana', { start: 10, end: 11 }),
-                frameRate: 8,
-                repeat: -1,
-            });
-
-            anims.create({
-                key: 'kirana_shell_enter',
-                frames: anims.generateFrameNumbers('kirana', { start: 12, end: 15 }),
-                frameRate: 12,
-                repeat: 0,
-            });
-
-            anims.create({
-                key: 'kirana_shell_idle',
-                frames: anims.generateFrameNumbers('kirana', { start: 15, end: 16 }),
-                frameRate: 4,
-                repeat: -1,
-            });
-
-            anims.create({
-                key: 'kirana_shell_exit',
-                frames: anims.generateFrameNumbers('kirana', { start: 15, end: 12 }),
-                frameRate: 12,
-                repeat: 0,
-            });
-
-            anims.create({
-                key: 'kirana_hurt',
-                frames: anims.generateFrameNumbers('kirana', { start: 17, end: 18 }),
-                frameRate: 10,
-                repeat: 0,
-            });
-
-            anims.create({
-                key: 'kirana_death',
-                frames: anims.generateFrameNumbers('kirana', { start: 19, end: 22 }),
-                frameRate: 8,
-                repeat: 0,
-            });
-        }
-
-        // Enemy animations
-        if (!anims.exists('galuh_idle')) {
-            anims.create({
-                key: 'galuh_idle',
-                frames: anims.generateFrameNumbers('galuh', { start: 0, end: 3 }),
-                frameRate: 4,
-                repeat: -1,
-            });
-
-            anims.create({
-                key: 'galuh_walk',
-                frames: anims.generateFrameNumbers('galuh', { start: 4, end: 7 }),
-                frameRate: 6,
-                repeat: -1,
-            });
-
-            anims.create({
-                key: 'galuh_alert',
-                frames: anims.generateFrameNumbers('galuh', { start: 8, end: 11 }),
-                frameRate: 8,
-                repeat: 0,
-            });
-
-            anims.create({
-                key: 'galuh_chase',
-                frames: anims.generateFrameNumbers('galuh', { start: 12, end: 17 }),
-                frameRate: 10,
-                repeat: -1,
-            });
-
-            anims.create({
-                key: 'galuh_search',
-                frames: anims.generateFrameNumbers('galuh', { start: 18, end: 21 }),
-                frameRate: 5,
-                repeat: -1,
-            });
-        }
-
-        // Torch
-        if (!anims.exists('torch_burn')) {
-            anims.create({
-                key: 'torch_burn',
-                frames: anims.generateFrameNumbers('torch', { start: 0, end: 5 }),
-                frameRate: 10,
-                repeat: -1,
-            });
-        }
-
-        console.log('✅ Animations created');
+        console.log('✅ Animations created (safe mode)');
     }
 
     startGame() {
@@ -404,6 +361,9 @@ export class BootScene extends Phaser.Scene {
         this.cameras.main.once('camerafadeoutcomplete', () => {
             // Emit game ready to React
             GameEvents.gameReady();
+            
+            // Emit loading complete to hide loading screen and show HUD
+            EventBus.emit('loading:complete');
             
             // Start Level 1
             this.scene.start('Level1');

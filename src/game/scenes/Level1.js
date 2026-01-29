@@ -42,31 +42,49 @@ export class Level1 extends Phaser.Scene {
     createBackground() {
         const { width, height } = this.cameras.main;
 
-        // Sky
-        if (this.textures.exists('bg_sky')) {
-            this.bgSky = this.add.tileSprite(0, 0, width * 3, height, 'bg_sky')
-                .setOrigin(0).setScrollFactor(0).setDepth(-10);
+        // ========== LAYER 1: SKY (Furthest back, no scroll) ==========
+        if (this.textures.exists('bg_level1_sky')) {
+            this.bgSky = this.add.image(width / 2, height / 2, 'bg_level1_sky')
+                .setScrollFactor(0)
+                .setDepth(-50)
+                .setDisplaySize(width, height);
         } else {
-            this.add.rectangle(0, 0, width * 3, height, 0x0a0a15)
-                .setOrigin(0).setScrollFactor(0).setDepth(-10);
+            // Fallback dark sky
+            this.add.rectangle(0, 0, width, height, 0x0a0a15)
+                .setOrigin(0).setScrollFactor(0).setDepth(-50);
         }
 
-        // Mountains
-        if (this.textures.exists('bg_mountains')) {
-            this.bgMountains = this.add.tileSprite(0, height - 400, width * 3, 400, 'bg_mountains')
-                .setOrigin(0, 0).setScrollFactor(0).setDepth(-9);
+        // ========== LAYER 2: FOREST (Slow parallax) ==========
+        if (this.textures.exists('bg_level1_forest')) {
+            this.bgForest = this.add.tileSprite(0, 0, width, height, 'bg_level1_forest')
+                .setOrigin(0)
+                .setScrollFactor(0)
+                .setDepth(-40);
         }
 
-        // Far trees
-        if (this.textures.exists('bg_trees_far')) {
-            this.bgTreesFar = this.add.tileSprite(0, height - 350, width * 3, 350, 'bg_trees_far')
-                .setOrigin(0, 0).setScrollFactor(0).setDepth(-8);
+        // ========== LAYER 3: MID (Medium parallax) ==========
+        if (this.textures.exists('bg_level1_mid')) {
+            this.bgMid = this.add.tileSprite(0, 0, width, height, 'bg_level1_mid')
+                .setOrigin(0)
+                .setScrollFactor(0)
+                .setDepth(-30);
         }
 
-        // Near trees
-        if (this.textures.exists('bg_trees_near')) {
-            this.bgTreesNear = this.add.tileSprite(0, height - 300, width * 3, 300, 'bg_trees_near')
-                .setOrigin(0, 0).setScrollFactor(0).setDepth(-7);
+        // ========== LAYER 4: FRAME (Faster parallax, closer trees) ==========
+        if (this.textures.exists('bg_level1_frame')) {
+            this.bgFrame = this.add.tileSprite(0, 0, width, height, 'bg_level1_frame')
+                .setOrigin(0)
+                .setScrollFactor(0)
+                .setDepth(-20);
+        }
+
+        // ========== LAYER 5: FOG (Foreground overlay, slowest) ==========
+        if (this.textures.exists('bg_level1_fog')) {
+            this.bgFog = this.add.tileSprite(0, 0, width, height, 'bg_level1_fog')
+                .setOrigin(0)
+                .setScrollFactor(0)
+                .setDepth(100) // In front of everything for fog effect
+                .setAlpha(0.6); // Semi-transparent fog
         }
     }
 
@@ -265,6 +283,29 @@ export class Level1 extends Phaser.Scene {
         
         // Listen for volume changes from React settings
         EventBus.on('settings:volume_changed', this.onVolumeChanged, this);
+
+        // ========== DEV EVENTS ==========
+        EventBus.on('dev:switch_level', this.onDevSwitchLevel, this);
+        EventBus.on('dev:set_health', this.onDevSetHealth, this);
+        EventBus.on('dev:toggle_invincible', this.onDevToggleInvincible, this);
+    }
+
+    // ========== DEV HANDLERS ==========
+    onDevSwitchLevel(levelKey) {
+        console.log(`🚀 Switching to ${levelKey}`);
+        this.cleanup();
+        this.scene.start(levelKey);
+    }
+
+    onDevSetHealth(health) {
+        if (this.player) this.player.currentHealth = health;
+    }
+
+    onDevToggleInvincible() {
+        if (this.player) {
+            this.player.isInvincible = !this.player.isInvincible;
+            console.log(`🛡️ Invincible: ${this.player.isInvincible}`);
+        }
     }
     
     onVolumeChanged(data) {
@@ -330,9 +371,21 @@ export class Level1 extends Phaser.Scene {
 
     updateParallax() {
         const camX = this.cameras.main.scrollX;
-        if (this.bgMountains) this.bgMountains.tilePositionX = camX * 0.1;
-        if (this.bgTreesFar) this.bgTreesFar.tilePositionX = camX * 0.3;
-        if (this.bgTreesNear) this.bgTreesNear.tilePositionX = camX * 0.5;
+        const time = this.time.now;
+        
+        // Layer 2: Forest (very slow - distant)
+        if (this.bgForest) this.bgForest.tilePositionX = camX * 0.05;
+        
+        // Layer 3: Mid (slow)
+        if (this.bgMid) this.bgMid.tilePositionX = camX * 0.15;
+        
+        // Layer 4: Frame (medium - closer trees)
+        if (this.bgFrame) this.bgFrame.tilePositionX = camX * 0.3;
+        
+        // Layer 5: Fog (slow drift + camera follow)
+        if (this.bgFog) {
+            this.bgFog.tilePositionX = camX * 0.02 + time * 0.01; // Slow auto-drift
+        }
     }
 
     cleanup() {
