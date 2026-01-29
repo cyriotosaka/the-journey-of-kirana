@@ -45,3 +45,5 @@ coverage
 
 # Vite specific
 .vite/
+
+*:Zone.Identifier
