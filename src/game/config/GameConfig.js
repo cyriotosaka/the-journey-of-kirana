@@ -11,6 +11,11 @@ import Phaser from 'phaser';
 import { BootScene } from '../scenes/BootScene';
 import { Level1 } from '../scenes/Level1';
 import { Level2 } from '../scenes/Level2';
+import { Level3 } from '../scenes/Level3';
+import { Level4 } from '../scenes/Level4';
+import { Level5 } from '../scenes/Level5';
+import { Level6 } from '../scenes/Level6';
+import { Level7 } from '../scenes/Level7';
 
 const gameConfig = {
     // ========== CORE CONFIG ==========
@@ -81,8 +86,13 @@ const gameConfig = {
     // ========== SCENES ==========
     scene: [
         BootScene,   // Loading screen → auto starts Level1
-        Level1,      // Level pertama
-        Level2,      // Level kedua
+        Level1,      // Level 1 - Rumah Nenek & Tepi Sungai
+        Level2,      // Level 2 - Hutan Terkutuk
+        Level3,      // Level 3 - Jejak Sang Raksasa
+        Level4,      // Level 4 - Rawa & Penyamaran
+        Level5,      // Level 5 - Markas Buto Ijo
+        Level6,      // Level 6 - Kebenaran Keong Mas
+        Level7,      // Level 7 - Pembebasan
     ],
 
     // ========== INPUT ==========

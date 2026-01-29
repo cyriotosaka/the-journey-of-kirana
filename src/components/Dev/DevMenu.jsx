@@ -11,8 +11,13 @@ import useGameStore from '../../stores/useGameStore';
 import './DevMenu.css';
 
 const LEVELS = [
-    { key: 'Level1', name: 'Level 1 - Hutan Bambu' },
-    { key: 'Level2', name: 'Level 2 - Gua Kristal' },
+    { key: 'Level1', name: 'L1 - Rumah Nenek' },
+    { key: 'Level2', name: 'L2 - Hutan Terkutuk' },
+    { key: 'Level3', name: 'L3 - Jejak Raksasa' },
+    { key: 'Level4', name: 'L4 - Rawa & Penyamaran' },
+    { key: 'Level5', name: 'L5 - Markas Buto Ijo' },
+    { key: 'Level6', name: 'L6 - Kebenaran Keong' },
+    { key: 'Level7', name: 'L7 - Pembebasan' },
 ];
 
 const DevMenu = () => {
