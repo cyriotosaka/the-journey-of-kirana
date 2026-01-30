@@ -209,10 +209,6 @@ export class Level7 extends Phaser.Scene {
             isStatic: true, label: 'ground',
         });
 
-        const groundGraphics = this.add.graphics();
-        groundGraphics.fillStyle(0x2a2a3a);
-        groundGraphics.fillRect(0, groundY, width, 60);
-
         // Walls to contain the arena
         this.matter.add.rectangle(30, height / 2, 60, height, { isStatic: true });
         this.matter.add.rectangle(width - 30, height / 2, 60, height, { isStatic: true });
@@ -256,6 +252,9 @@ export class Level7 extends Phaser.Scene {
             flicker: true,
             color: 0xffd700, // Golden
         });
+        
+        // Make background visible
+        this.lightingSystem.setAmbientLight(1);
     }
 
     setupCamera() {

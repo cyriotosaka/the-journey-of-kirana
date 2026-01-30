@@ -81,7 +81,7 @@ export class BootScene extends Phaser.Scene {
         // PROPS
         this.propsConfig = [
             { key: 'prop_door', file: 'door.png', cols: 5, rows: 1 },
-            { key: 'prop_torch', file: 'torch.png', cols: 1, rows: 4 }, // Vertical strip
+            { key: 'prop_torch', file: 'torch.png', cols: 4, rows: 1 }, // Revert to horizontal
             { key: 'prop_switch', file: 'switch.png', cols: 2, rows: 1 },
         ];
 
@@ -104,6 +104,11 @@ export class BootScene extends Phaser.Scene {
         // BACKGROUNDS
         this.load.image('bg_level1', 'assets/images/backgrounds/level1/bg level 1 panoramic game.png');
         this.load.image('bg_level2', 'assets/images/backgrounds/level2/bg level 2 panoramic game.png');
+        this.load.image('bg_level3', 'assets/images/backgrounds/level3/bg level 3 panoramic game.png');
+        this.load.image('bg_level4', 'assets/images/backgrounds/level4/bg level 4 panoramic game.png');
+        this.load.image('bg_level5', 'assets/images/backgrounds/level5/bg level 5 panoramic game.png');
+        this.load.image('bg_level6', 'assets/images/backgrounds/level6/bg level 6 panoramic game.png');
+        this.load.image('bg_level7', 'assets/images/backgrounds/level7/bg level 7 panoramic game.png');
 
         this.load.on('progress', this.onLoadProgress, this);
         this.load.on('complete', this.onLoadComplete, this);

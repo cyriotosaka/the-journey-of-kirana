@@ -80,9 +80,8 @@ export class Level5 extends Phaser.Scene {
         });
 
         const groundGraphics = this.add.graphics();
-        groundGraphics.fillStyle(0x1a1a0a);
-        groundGraphics.fillRect(0, groundY, width * 3, 60);
-
+        // Removed graphics
+        
         // Bone/wood platforms
         const platforms = [
             { x: 300, y: groundY - 70, w: 100, h: 20 },
@@ -98,10 +97,6 @@ export class Level5 extends Phaser.Scene {
             this.matter.add.rectangle(p.x, p.y + p.h / 2, p.w, p.h, {
                 isStatic: true, label: 'platform',
             });
-
-            const platformGraphics = this.add.graphics();
-            platformGraphics.fillStyle(0x2a2a1a);
-            platformGraphics.fillRect(p.x - p.w / 2, p.y, p.w, p.h);
         });
 
         this.matter.world.setBounds(0, 0, width * 3, height);
@@ -207,6 +202,9 @@ export class Level5 extends Phaser.Scene {
                 flicker: true,
             });
         });
+        
+        // Make background visible
+        this.lightingSystem.setAmbientLight(1);
     }
 
     setupCamera() {

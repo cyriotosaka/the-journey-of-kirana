@@ -79,17 +79,6 @@ export class Level4 extends Phaser.Scene {
             isStatic: true, label: 'ground',
         });
 
-        const groundGraphics = this.add.graphics();
-        groundGraphics.fillStyle(0x2a4035);
-        groundGraphics.fillRect(0, groundY, width * 3, 60);
-
-        // Water areas - shallow reflecting water
-        const waterGraphics = this.add.graphics();
-        waterGraphics.fillStyle(0x234a50, 0.5);
-        waterGraphics.fillRect(200, groundY - 5, 400, 10);
-        waterGraphics.fillRect(800, groundY - 5, 500, 10);
-        waterGraphics.fillRect(1500, groundY - 5, 600, 10);
-
         // Root platforms
         const platforms = [
             { x: 350, y: groundY - 80, w: 120, h: 20 },
@@ -103,10 +92,6 @@ export class Level4 extends Phaser.Scene {
             this.matter.add.rectangle(p.x, p.y + p.h / 2, p.w, p.h, {
                 isStatic: true, label: 'platform',
             });
-
-            const platformGraphics = this.add.graphics();
-            platformGraphics.fillStyle(0x4a6352);
-            platformGraphics.fillRect(p.x - p.w / 2, p.y, p.w, p.h);
         });
 
         this.matter.world.setBounds(0, 0, width * 3, height);
@@ -183,6 +168,9 @@ export class Level4 extends Phaser.Scene {
             flicker: true,
             color: 0xffffcc, // Keong golden glow
         });
+        
+        // Make background visible
+        this.lightingSystem.setAmbientLight(1);
     }
 
     setupCamera() {

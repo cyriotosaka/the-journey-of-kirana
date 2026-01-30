@@ -110,10 +110,6 @@ export class Level6 extends Phaser.Scene {
             isStatic: true, label: 'ground',
         });
 
-        const groundGraphics = this.add.graphics();
-        groundGraphics.fillStyle(0xd4af37);
-        groundGraphics.fillRect(0, groundY, width * 2, 60);
-
         // Simple platforms - meditation spots
         const platforms = [
             { x: 400, y: groundY - 80, w: 150, h: 20 },
@@ -125,10 +121,6 @@ export class Level6 extends Phaser.Scene {
             this.matter.add.rectangle(p.x, p.y + p.h / 2, p.w, p.h, {
                 isStatic: true, label: 'platform',
             });
-
-            const platformGraphics = this.add.graphics();
-            platformGraphics.fillStyle(0xe6c85e);
-            platformGraphics.fillRect(p.x - p.w / 2, p.y, p.w, p.h);
         });
 
         this.matter.world.setBounds(0, 0, width * 2, height);
@@ -177,6 +169,9 @@ export class Level6 extends Phaser.Scene {
             flicker: false,
             color: 0xffd700, // Golden
         });
+        
+        // Make background visible
+        this.lightingSystem.setAmbientLight(1);
     }
 
     setupCamera() {

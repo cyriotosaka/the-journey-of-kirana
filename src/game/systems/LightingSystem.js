@@ -99,14 +99,14 @@ export class LightingSystem {
         // Torch sprite
         if (this.scene.textures.exists('prop_torch')) {
             light.sprite = this.scene.add.sprite(x, y - 20, 'prop_torch');
-            if (this.scene.anims.exists('torch_burn')) {
-                light.sprite.play('torch_burn');
-            }
+            // Disable animation to prevent "drifting" (bad asset alignment)
+            // light.sprite.play('torch_burn'); 
+            light.sprite.setFrame(0);
+            light.sprite.setDepth(-10); // Behind player
         } else if (this.scene.textures.exists('torch')) {
             light.sprite = this.scene.add.sprite(x, y - 20, 'torch');
-            if (this.scene.anims.exists('torch_burn')) {
-                light.sprite.play('torch_burn');
-            }
+            light.sprite.setFrame(0);
+            light.sprite.setDepth(-10);
         }
 
         // Fire particles
