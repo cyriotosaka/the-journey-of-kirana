@@ -50,4 +50,5 @@ export default defineConfig({
     optimizeDeps: {
         include: ['phaser', 'zustand'],
     },
+    server: { allowedHosts: [ 'kirana.deepkernel.site' ] },
 });
