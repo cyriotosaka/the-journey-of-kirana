@@ -105,7 +105,7 @@ export class Player extends Phaser.Physics.Matter.Sprite {
         
         // Scale down sprite (adjusted for visibility)
         this.setScale(0.18); 
-        this.setOrigin(0.5);
+        this.setOrigin(0.5, 0.9);
     }
 
     setupPhysics() {

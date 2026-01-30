@@ -44,24 +44,10 @@ export class LightingSystem {
     }
 
     createVignette() {
-        const { width, height } = this.scene.cameras.main;
-
+        // Disabled vignette for clarity
         this.vignette = this.scene.add.graphics();
         this.vignette.setScrollFactor(0);
         this.vignette.setDepth(91);
-
-        // Radial gradient vignette
-        const centerX = width / 2;
-        const centerY = height / 2;
-        const maxRadius = Math.max(width, height) * 0.8;
-
-        for (let i = 0; i < 15; i++) {
-            const alpha = (i / 15) * 0.4;
-            const radius = maxRadius * (1 - i / 15);
-
-            this.vignette.fillStyle(0x000000, alpha);
-            this.vignette.fillCircle(centerX, centerY, radius);
-        }
     }
 
     // Add player light
@@ -111,7 +97,12 @@ export class LightingSystem {
         });
 
         // Torch sprite
-        if (this.scene.textures.exists('torch')) {
+        if (this.scene.textures.exists('prop_torch')) {
+            light.sprite = this.scene.add.sprite(x, y - 20, 'prop_torch');
+            if (this.scene.anims.exists('torch_burn')) {
+                light.sprite.play('torch_burn');
+            }
+        } else if (this.scene.textures.exists('torch')) {
             light.sprite = this.scene.add.sprite(x, y - 20, 'torch');
             if (this.scene.anims.exists('torch_burn')) {
                 light.sprite.play('torch_burn');
@@ -159,50 +150,26 @@ export class LightingSystem {
             return;
         }
 
+        const darkness = 1 - this.ambientLight;
+
+        // FIX: Don't render artifacts if the scene is bright
+        if (darkness <= 0.05) {
+            this.darkOverlay.clear();
+            return;
+        }
+
         this.darkOverlay.setVisible(true);
         this.darkOverlay.clear();
 
         const { width, height } = this.scene.cameras.main;
-        const camera = this.scene.cameras.main;
-
-        // Fill with darkness
-        const r = (this.darknessColor >> 16) & 0xff;
-        const g = (this.darknessColor >> 8) & 0xff;
-        const b = this.darknessColor & 0xff;
-        const darkness = 1 - this.ambientLight;
-
+        
+        // Fill with darkness (Simple overlay for now to avoid artifacts)
         this.darkOverlay.fillStyle(this.darknessColor, darkness);
         this.darkOverlay.fillRect(0, 0, width, height);
 
-        // Cut out light areas
-        this.darkOverlay.setBlendMode(Phaser.BlendModes.ERASE);
-
-        // Player light
-        if (this.playerLight && this.playerLight.target) {
-            this.updateFlicker(this.playerLight, time);
-            this.drawLightHole(
-                this.playerLight.target.x - camera.scrollX,
-                this.playerLight.target.y - camera.scrollY,
-                this.playerLight.radius,
-                this.playerLight._currentIntensity
-            );
-        }
-
-        // Static lights
-        for (const light of this.lights) {
-            if (!light.active) continue;
-
-            this.updateFlicker(light, time);
-            this.drawLightHole(
-                light.x - camera.scrollX,
-                light.y - camera.scrollY,
-                light.radius,
-                light._currentIntensity
-            );
-        }
-
-        // Reset blend mode
-        this.darkOverlay.setBlendMode(Phaser.BlendModes.MULTIPLY);
+        // Note: Advanced hole cutting disabled due to blend mode limitations
+        // To properly implement lights in dark levels, we should use Phaser.Lights
+        // or a GeometryMask solution in the future.
     }
 
     drawLightHole(x, y, radius, intensity) {

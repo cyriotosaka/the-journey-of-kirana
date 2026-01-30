@@ -73,27 +73,50 @@ export class BootScene extends Phaser.Scene {
         // ============================================
         // LOAD ITEMS
         // ============================================
-        this.load.spritesheet('items', 'assets/images/items/items_sheet.png', {
-            frameWidth: 32,
-            frameHeight: 32
-        });
+
 
         // ============================================
-        // LOAD LEVEL 1 BACKGROUND LAYERS (Parallax)
+        // LOAD BACKGROUNDS (Single Panoramic Images)
         // ============================================
-        this.load.image('bg_level1_sky', 'assets/images/backgrounds/level1/layer1_sky.png');
-        this.load.image('bg_level1_forest', 'assets/images/backgrounds/level1/layer2_forest.png');
-        this.load.image('bg_level1_mid', 'assets/images/backgrounds/level1/layer3_mid.png');
-        this.load.image('bg_level1_frame', 'assets/images/backgrounds/level1/layer4_frame.png');
-        this.load.image('bg_level1_fog', 'assets/images/backgrounds/level1/layer5_fog.png');
+        this.load.image('bg_level1', 'assets/images/backgrounds/level1/bg level 1 panoramic game.png');
+        this.load.image('bg_level2', 'assets/images/backgrounds/level2/bg level 2 panoramic game.png');
+        this.load.image('bg_level3', 'assets/images/backgrounds/level3/bg level 3 panoramic game.png');
+        this.load.image('bg_level4', 'assets/images/backgrounds/level4/bg level 4 panoramic game.png');
+        this.load.image('bg_level5', 'assets/images/backgrounds/level5/bg level 5 panoramic game.png');
+        this.load.image('bg_level6', 'assets/images/backgrounds/level6/bg level 6 panoramic game.png');
+        this.load.image('bg_level7', 'assets/images/backgrounds/level7/bg level 7 panoramic game.png');
 
         // ============================================
-        // LOAD LEVEL 2 BACKGROUND LAYERS (Parallax)
+        // LOAD NEW CHARACTERS & PROPS
         // ============================================
-        this.load.image('bg_level2_layer1', 'assets/images/backgrounds/level2/layer1.png');
-        this.load.image('bg_level2_layer2', 'assets/images/backgrounds/level2/layer2.png');
-        this.load.image('bg_level2_layer3', 'assets/images/backgrounds/level2/layer3.png');
-        this.load.image('bg_level2_layer4', 'assets/images/backgrounds/level2/layer4.png');
+        
+        // GALUH (96x96)
+        const galuhPath = 'assets/images/characters/galuh/';
+        this.load.spritesheet('galuh_idle', galuhPath + 'idle.png', { frameWidth: 96, frameHeight: 96 });
+        this.load.spritesheet('galuh_walk', galuhPath + 'walking.png', { frameWidth: 96, frameHeight: 96 }); // Fixed filename
+        this.load.spritesheet('galuh_alert', galuhPath + 'alert.png', { frameWidth: 96, frameHeight: 96 });
+        this.load.spritesheet('galuh_chase', galuhPath + 'chase.png', { frameWidth: 96, frameHeight: 96 });
+        this.load.spritesheet('galuh_search', galuhPath + 'search.png', { frameWidth: 96, frameHeight: 96 });
+
+        // BUTO IJO (128x128)
+        const giantPath = 'assets/images/characters/giant/';
+        this.load.spritesheet('giant_idle', giantPath + 'idle.png', { frameWidth: 128, frameHeight: 128 });
+        this.load.spritesheet('giant_walk', giantPath + 'walk.png', { frameWidth: 128, frameHeight: 128 });
+        this.load.spritesheet('giant_stomp', giantPath + 'stomp.png', { frameWidth: 128, frameHeight: 128 });
+        this.load.spritesheet('giant_roar', giantPath + 'roar.png', { frameWidth: 128, frameHeight: 128 });
+
+        // PROPS
+        const propsPath = 'assets/images/props/';
+        this.load.spritesheet('prop_door', propsPath + 'door.png', { frameWidth: 64, frameHeight: 96 });
+        this.load.spritesheet('prop_torch', propsPath + 'torch.png', { frameWidth: 32, frameHeight: 64 });
+        this.load.image('prop_hiding_spot', propsPath + 'barrel_hiding_spot.png'); 
+        this.load.spritesheet('prop_switch', propsPath + 'switch.png', { frameWidth: 32, frameHeight: 32 });
+
+        // ITEMS (Individual)
+        const itemsPath = 'assets/images/items/';
+        this.load.image('item_key', itemsPath + 'key.png');
+        this.load.image('item_shell_fragment', itemsPath + 'shell_fragment.png');
+        this.load.image('item_health', itemsPath + 'potion.png');
 
         this.load.on('progress', this.onLoadProgress, this);
         this.load.on('complete', this.onLoadComplete, this);
@@ -437,16 +460,28 @@ export class BootScene extends Phaser.Scene {
         createAnim('kirana_shell_enter', 'kirana_shell_enter', 0, 4, 12, 0);  // 5 frames
         createAnim('kirana_shell_idle', 'kirana_shell_idle', 0, 1, 4, -1);    // 2 frames
         createAnim('kirana_shell_exit', 'kirana_shell_exit', 0, 4, 12, 0);    // 5 frames
+
+        // ========== GALUH ANIMATIONS ==========
+        createAnim('galuh_idle', 'galuh_idle', 0, 3, 6, -1);
+        createAnim('galuh_walk', 'galuh_walk', 0, 7, 8, -1);
+        createAnim('galuh_alert', 'galuh_alert', 0, 3, 8, 0);
+        createAnim('galuh_chase', 'galuh_chase', 0, 7, 10, -1);
+        createAnim('galuh_search', 'galuh_search', 0, 5, 8, -1);
+
+        // ========== GIANT ANIMATIONS ==========
+        createAnim('giant_idle', 'giant_idle', 0, 3, 4, -1);
+        createAnim('giant_walk', 'giant_walk', 0, 7, 6, -1);
+        createAnim('giant_stomp', 'giant_stomp', 0, 5, 8, 0);
+        createAnim('giant_roar', 'giant_roar', 0, 3, 8, 0);
+
+        // ========== PROPS ANIMATIONS ==========
+        createAnim('door_open', 'prop_door', 0, 4, 10, 0);
+        createAnim('torch_burn', 'prop_torch', 0, 5, 10, -1);
+        // Switch frames
+        createAnim('switch_on', 'prop_switch', 1, 1, 1, 0);
+        createAnim('switch_off', 'prop_switch', 0, 0, 1, 0);
         
-        // ========== ENEMY ANIMATIONS ==========
-        createAnim('galuh_idle', 'galuh', 0, 3, 4, -1);
-        createAnim('galuh_walk', 'galuh', 4, 7, 6, -1);
-        createAnim('galuh_alert', 'galuh', 8, 11, 8, 0);
-        createAnim('galuh_chase', 'galuh', 12, 17, 10, -1);
-        createAnim('galuh_search', 'galuh', 18, 21, 5, -1);
-        
-        // ========== TORCH ANIMATION ==========
-        createAnim('torch_burn', 'torch', 0, 5, 10, -1);
+
 
         console.log('✅ Animations created (safe mode)');
     }

@@ -43,48 +43,15 @@ export class Level1 extends Phaser.Scene {
         const { width, height } = this.cameras.main;
         const worldWidth = width * 3; // Estimasi panjang level
 
-        // ========== LAYER 1: SKY (Fixed) ==========
-        if (this.textures.exists('bg_level1_sky')) {
-            this.bgSky = this.add.image(width / 2, height / 2, 'bg_level1_sky')
-                .setScrollFactor(0)
+        if (this.textures.exists('bg_level1')) {
+            this.bgKey = this.add.image(worldWidth / 2, height / 2, 'bg_level1')
+                .setScrollFactor(0.2) // Parallax effect for single image
                 .setDepth(-50)
-                .setDisplaySize(width, height);
+                .setDisplaySize(worldWidth, height);
         } else {
-            this.add.rectangle(width / 2, height / 2, width, height, 0x0a0a15)
+             // Fallback
+             this.add.rectangle(width / 2, height / 2, width, height, 0x0a0a15)
                 .setScrollFactor(0).setDepth(-50);
-        }
-
-        // ========== LAYER 2: FOREST (Stretched, scroll 0.2) ==========
-        if (this.textures.exists('bg_level1_forest')) {
-            this.bgForest = this.add.image(worldWidth / 2, height / 2, 'bg_level1_forest')
-                .setScrollFactor(0.2)
-                .setDepth(-40)
-                .setDisplaySize(worldWidth, height);
-        }
-
-        // ========== LAYER 3: MID (Stretched, scroll 0.5) ==========
-        if (this.textures.exists('bg_level1_mid')) {
-            this.bgMid = this.add.image(worldWidth / 2, height / 2, 'bg_level1_mid')
-                .setScrollFactor(0.5)
-                .setDepth(-30)
-                .setDisplaySize(worldWidth, height);
-        }
-
-        // ========== LAYER 4: FRAME (Stretched, scroll 0.8) ==========
-        if (this.textures.exists('bg_level1_frame')) {
-            this.bgFrame = this.add.image(worldWidth / 2, height / 2, 'bg_level1_frame')
-                .setScrollFactor(0.8)
-                .setDepth(-20)
-                .setDisplaySize(worldWidth, height);
-        }
-
-        // ========== LAYER 5: FOG (Stretched, scroll 1.0) ==========
-        if (this.textures.exists('bg_level1_fog')) {
-            this.bgFog = this.add.image(worldWidth / 2, height / 2, 'bg_level1_fog')
-                .setScrollFactor(1)
-                .setDepth(100)
-                .setAlpha(0.6)
-                .setDisplaySize(worldWidth, height);
         }
     }
 
@@ -121,6 +88,7 @@ export class Level1 extends Phaser.Scene {
         const { width, height } = this.cameras.main;
         const groundY = height - 200; // Raised to avoid HUD overlap
 
+        // Ground to avoid HUD overlap
         // Ground
         this.matter.add.rectangle(width, groundY + 40, width * 4, 80, {
             isStatic: true,
@@ -192,8 +160,9 @@ export class Level1 extends Phaser.Scene {
     createInteractables() {
         this.interactables = [];
         const { height } = this.cameras.main;
+        const groundY = height - 200; // Match raised ground L122
 
-        const fragment = new Item(this, 500, height - 150, {
+        const fragment = new Item(this, 500, groundY - 50, {
             id: 'shell_fragment_1',
             name: 'Pecahan Cangkang',
             description: 'Sebuah pecahan cangkang emas.',
@@ -201,7 +170,7 @@ export class Level1 extends Phaser.Scene {
         });
         this.interactables.push(fragment);
 
-        const key = new Item(this, 1300, height - 280, {
+        const key = new Item(this, 1300, groundY - 50, {
             id: 'key_level1',
             name: 'Kunci Berkarat',
             description: 'Kunci untuk pintu keluar.',
@@ -209,13 +178,15 @@ export class Level1 extends Phaser.Scene {
         });
         this.interactables.push(key);
 
-        const barrel1 = new HidingSpot(this, 450, height - 110, { texture: 'prop_barrel' });
+        // Hiding Spots (Updated texture)
+        const barrel1 = new HidingSpot(this, 450, groundY - 40, { texture: 'prop_hiding_spot' });
         this.interactables.push(barrel1);
 
-        const barrel2 = new HidingSpot(this, 1150, height - 110, { texture: 'prop_barrel' });
+        const barrel2 = new HidingSpot(this, 1150, groundY - 40, { texture: 'prop_hiding_spot' });
         this.interactables.push(barrel2);
 
-        const exitDoor = new Door(this, 2200, height - 140, {
+        // Door
+        const exitDoor = new Door(this, 2200, groundY - 48, { // Adjusted Y for 96px height
             isLocked: true,
             keyRequired: 'key_level1',
             targetScene: 'Level2',
@@ -223,6 +194,7 @@ export class Level1 extends Phaser.Scene {
         });
         this.interactables.push(exitDoor);
     }
+
 
     createLighting() {
         this.lightingSystem = new LightingSystem(this, {

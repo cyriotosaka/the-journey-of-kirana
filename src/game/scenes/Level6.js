@@ -84,29 +84,16 @@ export class Level6 extends Phaser.Scene {
 
     createBackground() {
         const { width, height } = this.cameras.main;
+        const worldWidth = width * 3;
 
-        // Golden, ethereal atmosphere
-        if (this.textures.exists('bg_level6_layer1')) {
-            this.bgLayer1 = this.add.tileSprite(0, 0, width, height, 'bg_level6_layer1')
-                .setOrigin(0).setScrollFactor(0).setDepth(-50).setDisplaySize(width, height);
+        if (this.textures.exists('bg_level6')) {
+            this.add.image(worldWidth / 2, height / 2, 'bg_level6')
+                .setScrollFactor(0.2)
+                .setDepth(-50)
+                .setDisplaySize(worldWidth, height);
         } else {
-            // Golden gradient fallback
-            this.add.rectangle(0, 0, width * 2, height, 0xfff8e0).setOrigin(0).setScrollFactor(0).setDepth(-50);
-        }
-
-        if (this.textures.exists('bg_level6_layer2')) {
-            this.bgLayer2 = this.add.tileSprite(0, 0, width, height, 'bg_level6_layer2')
-                .setOrigin(0).setScrollFactor(0).setDepth(-40).setDisplaySize(width, height);
-        }
-
-        if (this.textures.exists('bg_level6_layer3')) {
-            this.bgLayer3 = this.add.tileSprite(0, 0, width, height, 'bg_level6_layer3')
-                .setOrigin(0).setScrollFactor(0).setDepth(-30).setDisplaySize(width, height);
-        }
-
-        if (this.textures.exists('bg_level6_layer4')) {
-            this.bgLayer4 = this.add.tileSprite(0, 0, width, height, 'bg_level6_layer4')
-                .setOrigin(0).setScrollFactor(0).setDepth(-20).setDisplaySize(width, height);
+             this.add.rectangle(width / 2, height / 2, width, height, 0xfff8e0)
+                .setScrollFactor(0).setDepth(-50);
         }
     }
 

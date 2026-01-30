@@ -54,31 +54,16 @@ export class Level3 extends Phaser.Scene {
 
     createBackground() {
         const { width, height } = this.cameras.main;
+        const worldWidth = width * 3;
 
-        // ========== LAYER 1: Back (furthest) ==========
-        if (this.textures.exists('bg_level3_layer1')) {
-            this.bgLayer1 = this.add.tileSprite(0, 0, width, height, 'bg_level3_layer1')
-                .setOrigin(0).setScrollFactor(0).setDepth(-50).setDisplaySize(width, height);
+        if (this.textures.exists('bg_level3')) {
+            this.add.image(worldWidth / 2, height / 2, 'bg_level3')
+                .setScrollFactor(0.2)
+                .setDepth(-50)
+                .setDisplaySize(worldWidth, height);
         } else {
-            this.add.rectangle(0, 0, width * 2, height, 0x1a1a2e).setOrigin(0).setScrollFactor(0).setDepth(-50);
-        }
-
-        // ========== LAYER 2: Mid-back ==========
-        if (this.textures.exists('bg_level3_layer2')) {
-            this.bgLayer2 = this.add.tileSprite(0, 0, width, height, 'bg_level3_layer2')
-                .setOrigin(0).setScrollFactor(0).setDepth(-40).setDisplaySize(width, height);
-        }
-
-        // ========== LAYER 3: Mid-front ==========
-        if (this.textures.exists('bg_level3_layer3')) {
-            this.bgLayer3 = this.add.tileSprite(0, 0, width, height, 'bg_level3_layer3')
-                .setOrigin(0).setScrollFactor(0).setDepth(-30).setDisplaySize(width, height);
-        }
-
-        // ========== LAYER 4: Front (closest) ==========
-        if (this.textures.exists('bg_level3_layer4')) {
-            this.bgLayer4 = this.add.tileSprite(0, 0, width, height, 'bg_level3_layer4')
-                .setOrigin(0).setScrollFactor(0).setDepth(-20).setDisplaySize(width, height);
+             this.add.rectangle(width / 2, height / 2, width, height, 0x1a1a2e)
+                .setScrollFactor(0).setDepth(-50);
         }
     }
 

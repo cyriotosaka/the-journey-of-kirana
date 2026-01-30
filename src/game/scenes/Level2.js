@@ -53,52 +53,19 @@ export class Level2 extends Phaser.Scene {
 
     createBackground() {
         const { width, height } = this.cameras.main;
-        
-        // Level world bounds (3x screen width for scrolling)
         const worldWidth = width * 3;
 
-        // ========== LAYER 1: Sky/Back (furthest - no movement) ==========
-        if (this.textures.exists('bg_level2_layer1')) {
-            // Static layer covering full screen, no parallax
-            this.bgLayer1 = this.add.image(width / 2, height / 2, 'bg_level2_layer1')
-                .setScrollFactor(0)  // Fixed to camera
+        if (this.textures.exists('bg_level2')) {
+            this.bgKey = this.add.image(worldWidth / 2, height / 2, 'bg_level2')
+                .setScrollFactor(0.2)
                 .setDepth(-50)
-                .setDisplaySize(width, height);  // Scale to fill screen
-            console.log('✅ Level2: Layer 1 (sky) loaded');
+                .setDisplaySize(worldWidth, height);
         } else {
-            this.add.rectangle(width / 2, height / 2, width, height, 0x1a1a2e)
-                .setScrollFactor(0)
-                .setDepth(-50);
-            console.warn('⚠️ Level2: Layer 1 texture not found');
-        }
-
-        // ========== LAYER 2: Far trees (0.2 scroll factor) ==========
-        if (this.textures.exists('bg_level2_layer2')) {
-            this.bgLayer2 = this.add.image(worldWidth / 2, height / 2, 'bg_level2_layer2')
-                .setScrollFactor(0.2)  // Slow parallax
-                .setDepth(-40)
-                .setDisplaySize(worldWidth, height);  // Stretch to world width
-            console.log('✅ Level2: Layer 2 (far trees) loaded');
-        }
-
-        // ========== LAYER 3: Mid trees (0.5 scroll factor) ==========
-        if (this.textures.exists('bg_level2_layer3')) {
-            this.bgLayer3 = this.add.image(worldWidth / 2, height / 2, 'bg_level2_layer3')
-                .setScrollFactor(0.5)  // Medium parallax
-                .setDepth(-30)
-                .setDisplaySize(worldWidth, height);
-            console.log('✅ Level2: Layer 3 (mid trees) loaded');
-        }
-
-        // ========== LAYER 4: Front trees (0.8 scroll factor) ==========
-        if (this.textures.exists('bg_level2_layer4')) {
-            this.bgLayer4 = this.add.image(worldWidth / 2, height / 2, 'bg_level2_layer4')
-                .setScrollFactor(0.8)  // Fast parallax
-                .setDepth(-20)
-                .setDisplaySize(worldWidth, height);
-            console.log('✅ Level2: Layer 4 (front trees) loaded');
+             this.add.rectangle(width / 2, height / 2, width, height, 0x1a1a2e)
+                .setScrollFactor(0).setDepth(-50);
         }
     }
+
 
     createTilemap() {
         if (!this.cache.tilemap.exists('map_level2')) {
