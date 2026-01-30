@@ -90,27 +90,28 @@ export class BootScene extends Phaser.Scene {
         // LOAD NEW CHARACTERS & PROPS
         // ============================================
         
-        // GALUH (96x96)
-        const galuhPath = 'assets/images/characters/galuh/';
-        this.load.spritesheet('galuh_idle', galuhPath + 'idle.png', { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet('galuh_walk', galuhPath + 'walking.png', { frameWidth: 96, frameHeight: 96 }); // Fixed filename
-        this.load.spritesheet('galuh_alert', galuhPath + 'alert.png', { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet('galuh_chase', galuhPath + 'chase.png', { frameWidth: 96, frameHeight: 96 });
-        this.load.spritesheet('galuh_search', galuhPath + 'search.png', { frameWidth: 96, frameHeight: 96 });
-
-        // BUTO IJO (128x128)
-        const giantPath = 'assets/images/characters/giant/';
-        this.load.spritesheet('giant_idle', giantPath + 'idle.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('giant_walk', giantPath + 'walk.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('giant_stomp', giantPath + 'stomp.png', { frameWidth: 128, frameHeight: 128 });
-        this.load.spritesheet('giant_roar', giantPath + 'roar.png', { frameWidth: 128, frameHeight: 128 });
-
         // PROPS
         const propsPath = 'assets/images/props/';
         this.load.spritesheet('prop_door', propsPath + 'door.png', { frameWidth: 64, frameHeight: 96 });
         this.load.spritesheet('prop_torch', propsPath + 'torch.png', { frameWidth: 32, frameHeight: 64 });
         this.load.image('prop_hiding_spot', propsPath + 'barrel_hiding_spot.png'); 
         this.load.spritesheet('prop_switch', propsPath + 'switch.png', { frameWidth: 32, frameHeight: 32 });
+
+        // ENEMIES - GALUH (High Res)
+        const galuhPath = 'assets/images/characters/galuh/';
+        this.load.spritesheet('galuh_idle', galuhPath + 'idle.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('galuh_walk', galuhPath + 'walking.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('galuh_alert', galuhPath + 'alert.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('galuh_chase', galuhPath + 'chase.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('galuh_search', galuhPath + 'search.png', { frameWidth: 512, frameHeight: 512 });
+
+        // ENEMIES - GIANT (High Res)
+        const giantPath = 'assets/images/characters/giant/';
+        this.load.spritesheet('giant_idle', giantPath + 'idle.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('giant_walk', giantPath + 'walk.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('giant_stomp', giantPath + 'stomp.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.spritesheet('giant_roar', giantPath + 'roar.png', { frameWidth: 512, frameHeight: 512 });
+        this.load.image('giant_shadow_pass', giantPath + 'shadow_pass.png');
 
         // ITEMS (Individual)
         const itemsPath = 'assets/images/items/';

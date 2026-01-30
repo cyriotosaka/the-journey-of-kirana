@@ -162,7 +162,11 @@ export class Player extends Phaser.Physics.Matter.Sprite {
                 const interactableBody = bodyA.label === 'interactable' ? bodyA : bodyB;
                 this.canInteract = true;
                 this.currentInteractable = interactableBody.gameObject;
-                if (this.currentInteractable?.showPrompt) {
+                
+                // Auto-interact for items (Pickup)
+                if (this.currentInteractable.interactableType === 'item') {
+                    this.currentInteractable.interact(this);
+                } else if (this.currentInteractable?.showPrompt) {
                     this.currentInteractable.showPrompt();
                 }
             }
@@ -248,6 +252,7 @@ export class Player extends Phaser.Physics.Matter.Sprite {
         this.isHiding = true;
         this.setVelocityX(0);
         this.setFriction(this.shellFriction);
+        this.setVisible(false); // Hide sprite
 
         // Emit ke React UI
         EventBus.emit(EVENTS.PLAYER_HIDING);
@@ -258,6 +263,7 @@ export class Player extends Phaser.Physics.Matter.Sprite {
     exitShellMode() {
         this.isHiding = false;
         this.setFriction(this.normalFriction);
+        this.setVisible(true); // Show sprite
 
         // Emit ke React UI
         EventBus.emit(EVENTS.PLAYER_REVEALED);

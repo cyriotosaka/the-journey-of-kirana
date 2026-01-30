@@ -121,7 +121,7 @@ export class Interactable extends Phaser.Physics.Matter.Sprite {
  */
 export class Door extends Interactable {
     constructor(scene, x, y, options = {}) {
-        super(scene, x, y, options.texture || 'door', 0, {
+        super(scene, x, y, options.texture || 'prop_door', 0, {
             ...options,
             type: 'door',
             isSensor: false,
@@ -350,11 +350,12 @@ export class NPC extends Interactable {
  */
 export class HidingSpot extends Interactable {
     constructor(scene, x, y, options = {}) {
-        super(scene, x, y, options.texture || 'barrel', 0, {
+        super(scene, x, y, options.texture || 'prop_hiding_spot', 0, {
             ...options,
             type: 'hiding_spot',
         });
-
+        
+        this.setScale(0.15); // Scale down huge asset
         this.isOccupied = false;
     }
 
@@ -363,7 +364,10 @@ export class HidingSpot extends Interactable {
 
         this.isOccupied = true;
         player.enterShellMode();
-        this.setFrame(1);
+        // this.setFrame(1); // Disabled for single image
+        
+        // Optional hint: Tint slightly to show occupied?
+        this.setTint(0xcccccc);
 
         return true;
     }
@@ -371,7 +375,8 @@ export class HidingSpot extends Interactable {
     release(player) {
         this.isOccupied = false;
         player.exitShellMode();
-        this.setFrame(0);
+        this.clearTint();
+        // this.setFrame(0); // Disabled for single image
     }
 }
 

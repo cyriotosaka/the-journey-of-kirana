@@ -63,6 +63,7 @@ export class Enemy extends Phaser.Physics.Matter.Sprite {
 
         this.playAnimation('idle');
         this.setDepth(10);
+        this.setScale(0.25);
     }
 
     setupPhysics() {
@@ -77,6 +78,7 @@ export class Enemy extends Phaser.Physics.Matter.Sprite {
     setupVisionCone() {
         this.visionConeGraphics = this.scene.add.graphics();
         this.visionConeGraphics.setDepth(5);
+        this.visionConeGraphics.setVisible(false); // Hide debug visual
         this.updateVisionCone();
     }
 
