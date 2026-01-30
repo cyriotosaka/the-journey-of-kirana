@@ -39,81 +39,63 @@ export class BootScene extends Phaser.Scene {
         this.load.audio('bgm_level7', 'assets/audio/bgm/bgm_level7.mp3');
 
         // ============================================
-        // LOAD KIRANA CHARACTER SPRITESHEETS
+        // LOAD CHARACTER SPRITES (CONFIG)
         // ============================================
         const kiranaPath = 'assets/images/characters/kirana/';
-        
-        // Each sprite has different frame counts and layouts
-        // Format: { key, file, frameWidth, frameHeight, frameCount }
-        const kiranaSprites = [
-            { key: 'kirana_idle', file: 'kirana_idle.png', cols: 6, rows: 1 },
-            { key: 'kirana_walk', file: 'kirana_walk.png', cols: 5, rows: 2 },
-            { key: 'kirana_run', file: 'kirana_run.png', cols: 6, rows: 1 },
-            { key: 'kirana_jump', file: 'kirana_jump.png', cols: 7, rows: 1 },
-            { key: 'kirana_fall', file: 'kirana_fall.png', cols: 4, rows: 1 },
-            { key: 'kirana_landing', file: 'kirana_landing.png', cols: 6, rows: 1 },
-            { key: 'kirana_hurt', file: 'kirana_hurt.png', cols: 4, rows: 2 },
-            { key: 'kirana_death', file: 'kirana_death.png', cols: 4, rows: 2 },
-            { key: 'kirana_shell_enter', file: 'kirana_shell_enter.png', cols: 5, rows: 1 },
-            { key: 'kirana_shell_idle', file: 'kirana_shell_idle.png', cols: 2, rows: 1 },
-            { key: 'kirana_shell_exit', file: 'kirana_shell_exit.png', cols: 5, rows: 1 },
-        ];
-        
-        // Store sprite config for animation setup later
-        this.kiranaSpritesConfig = kiranaSprites;
-        
-        // Load each spritesheet as regular image first
-        // We'll calculate frame dimensions in create() after images load
-        kiranaSprites.forEach(sprite => {
-            this.load.image(sprite.key + '_sheet', kiranaPath + sprite.file);
-        });
-        
-        console.log('📦 Loading 11 Kirana sprite animations...');
-
-        // ============================================
-        // LOAD ITEMS
-        // ============================================
-
-
-        // ============================================
-        // LOAD BACKGROUNDS (Single Panoramic Images)
-        // ============================================
-        this.load.image('bg_level1', 'assets/images/backgrounds/level1/bg level 1 panoramic game.png');
-        this.load.image('bg_level2', 'assets/images/backgrounds/level2/bg level 2 panoramic game.png');
-        this.load.image('bg_level3', 'assets/images/backgrounds/level3/bg level 3 panoramic game.png');
-        this.load.image('bg_level4', 'assets/images/backgrounds/level4/bg level 4 panoramic game.png');
-        this.load.image('bg_level5', 'assets/images/backgrounds/level5/bg level 5 panoramic game.png');
-        this.load.image('bg_level6', 'assets/images/backgrounds/level6/bg level 6 panoramic game.png');
-        this.load.image('bg_level7', 'assets/images/backgrounds/level7/bg level 7 panoramic game.png');
-
-        // ============================================
-        // LOAD NEW CHARACTERS & PROPS
-        // ============================================
-        
-        // PROPS
-        const propsPath = 'assets/images/props/';
-        this.load.spritesheet('prop_door', propsPath + 'door.png', { frameWidth: 64, frameHeight: 96 });
-        this.load.spritesheet('prop_torch', propsPath + 'torch.png', { frameWidth: 32, frameHeight: 64 });
-        this.load.image('prop_hiding_spot', propsPath + 'barrel_hiding_spot.png'); 
-        this.load.spritesheet('prop_switch', propsPath + 'switch.png', { frameWidth: 32, frameHeight: 32 });
-
-        // ENEMIES - GALUH (High Res)
         const galuhPath = 'assets/images/characters/galuh/';
-        this.load.spritesheet('galuh_idle', galuhPath + 'idle.png', { frameWidth: 512, frameHeight: 512 });
-        this.load.spritesheet('galuh_walk', galuhPath + 'walking.png', { frameWidth: 512, frameHeight: 512 });
-        this.load.spritesheet('galuh_alert', galuhPath + 'alert.png', { frameWidth: 512, frameHeight: 512 });
-        this.load.spritesheet('galuh_chase', galuhPath + 'chase.png', { frameWidth: 512, frameHeight: 512 });
-        this.load.spritesheet('galuh_search', galuhPath + 'search.png', { frameWidth: 512, frameHeight: 512 });
-
-        // ENEMIES - GIANT (High Res)
         const giantPath = 'assets/images/characters/giant/';
-        this.load.spritesheet('giant_idle', giantPath + 'idle.png', { frameWidth: 512, frameHeight: 512 });
-        this.load.spritesheet('giant_walk', giantPath + 'walk.png', { frameWidth: 512, frameHeight: 512 });
-        this.load.spritesheet('giant_stomp', giantPath + 'stomp.png', { frameWidth: 512, frameHeight: 512 });
-        this.load.spritesheet('giant_roar', giantPath + 'roar.png', { frameWidth: 512, frameHeight: 512 });
+        const propsPath = 'assets/images/props/';
+
+        // KIRANA (User provided counts)
+        this.kiranaConfig = [
+            { key: 'kirana_idle', file: 'kirana_idle.png', cols: 6, rows: 1 },
+            { key: 'kirana_walk', file: 'kirana_walk.png', cols: 5, rows: 2 }, // 10 frames (Assumed 5x2 based on dimensions)
+            { key: 'kirana_run', file: 'kirana_run.png', cols: 6, rows: 1 },
+            { key: 'kirana_jump', file: 'kirana_jump.png', cols: 6, rows: 1 }, // 6 frames
+            { key: 'kirana_fall', file: 'kirana_fall.png', cols: 3, rows: 1 }, // 3 frames
+            { key: 'kirana_landing', file: 'kirana_landing.png', cols: 5, rows: 1 }, // 5 frames
+            { key: 'kirana_hurt', file: 'kirana_hurt.png', cols: 6, rows: 1 }, // 6 frames
+            { key: 'kirana_death', file: 'kirana_death.png', cols: 7, rows: 1 }, // 7 frames
+            { key: 'kirana_shell_enter', file: 'kirana_shell_enter.png', cols: 5, rows: 1 }, // 5 frames
+            { key: 'kirana_shell_idle', file: 'kirana_shell_idle.png', cols: 3, rows: 1 }, // 3 frames
+            { key: 'kirana_shell_exit', file: 'kirana_shell_exit.png', cols: 5, rows: 1 }, // 5 frames
+        ];
+
+        // GALUH (All 4 frames)
+        this.galuhConfig = [
+            { key: 'galuh_idle', file: 'idle.png', cols: 4, rows: 1 },
+            { key: 'galuh_walk', file: 'walking.png', cols: 4, rows: 1 },
+            { key: 'galuh_alert', file: 'alert.png', cols: 4, rows: 1 },
+            { key: 'galuh_chase', file: 'chase.png', cols: 4, rows: 1 },
+            { key: 'galuh_search', file: 'search.png', cols: 4, rows: 1 },
+        ];
+
+        // GIANT (All 4 frames)
+        this.giantConfig = [
+            { key: 'giant_idle', file: 'idle.png', cols: 4, rows: 1 },
+            { key: 'giant_walk', file: 'walk.png', cols: 4, rows: 1 },
+            { key: 'giant_stomp', file: 'stomp.png', cols: 4, rows: 1 },
+            { key: 'giant_roar', file: 'roar.png', cols: 4, rows: 1 },
+        ];
+
+        // PROPS
+        this.propsConfig = [
+            { key: 'prop_door', file: 'door.png', cols: 5, rows: 1 },
+            { key: 'prop_torch', file: 'torch.png', cols: 4, rows: 1 },
+            { key: 'prop_switch', file: 'switch.png', cols: 2, rows: 1 },
+        ];
+
+        // LOAD AS IMAGES FIRST
+        this.kiranaConfig.forEach(c => this.load.image(c.key + '_sheet', kiranaPath + c.file));
+        this.galuhConfig.forEach(c => this.load.image(c.key + '_sheet', galuhPath + c.file));
+        this.giantConfig.forEach(c => this.load.image(c.key + '_sheet', giantPath + c.file));
+        this.propsConfig.forEach(c => this.load.image(c.key + '_sheet', propsPath + c.file));
+        
+        // Single images (No animation)
+        this.load.image('prop_hiding_spot', propsPath + 'barrel_hiding_spot.png'); 
         this.load.image('giant_shadow_pass', giantPath + 'shadow_pass.png');
 
-        // ITEMS (Individual)
+        // ITEMS
         const itemsPath = 'assets/images/items/';
         this.load.image('item_key', itemsPath + 'key.png');
         this.load.image('item_shell_fragment', itemsPath + 'shell_fragment.png');
@@ -154,6 +136,7 @@ export class BootScene extends Phaser.Scene {
             centerX - 198,
             centerY + 50,
             0,
+            20,
             20,
             0xd4af37
         ).setOrigin(0, 0.5);
@@ -350,8 +333,11 @@ export class BootScene extends Phaser.Scene {
     onLoadComplete() {
         this.loadingComplete = true;
 
-        // Convert Kirana images to spritesheets
-        this.setupKiranaSpritesheets();
+        // Convert Images to Spritesheets (Dynamic Slicing)
+        this.setupSpritesheets(this.kiranaConfig);
+        this.setupSpritesheets(this.galuhConfig);
+        this.setupSpritesheets(this.giantConfig);
+        this.setupSpritesheets(this.propsConfig);
 
         // Create animations from spritesheets
         this.createAnimations();
@@ -365,51 +351,33 @@ export class BootScene extends Phaser.Scene {
     }
 
     /**
-     * Convert loaded Kirana images into proper spritesheets
-     * This calculates frame dimensions from image size and column/row counts
+     * Convert loaded images into spritesheets programmatically
      */
-    setupKiranaSpritesheets() {
-        if (!this.kiranaSpritesConfig) {
-            console.warn('⚠️ Kirana sprite config not found, using placeholders');
-            return;
-        }
+    setupSpritesheets(configList) {
+        if (!configList) return;
 
-        console.log('🔧 Setting up Kirana spritesheets...');
-
-        this.kiranaSpritesConfig.forEach(config => {
+        configList.forEach(config => {
             const sheetKey = config.key + '_sheet';
             
-            // Check if the image was loaded
             if (!this.textures.exists(sheetKey)) {
                 console.warn(`⚠️ Texture ${sheetKey} not found`);
                 return;
             }
 
-            // Get image dimensions
             const texture = this.textures.get(sheetKey);
             const source = texture.getSourceImage();
             const imgWidth = source.width;
             const imgHeight = source.height;
 
-            // Calculate frame dimensions
             const frameWidth = Math.floor(imgWidth / config.cols);
             const frameHeight = Math.floor(imgHeight / config.rows);
-            const totalFrames = config.cols * config.rows;
 
-            console.log(`  📦 ${config.key}: ${imgWidth}x${imgHeight} → ${frameWidth}x${frameHeight} (${totalFrames} frames)`);
-
-            // Remove the sheet key and create a new spritesheet from the same image
-            // We need to re-add the texture as a spritesheet
-            const path = 'assets/images/characters/kirana/' + config.file;
-            
-            // Create spritesheet from the loaded image
+            // Create spritesheet texture
             this.textures.addSpriteSheet(config.key, source, {
                 frameWidth: frameWidth,
                 frameHeight: frameHeight,
             });
         });
-
-        console.log('✅ Kirana spritesheets ready');
     }
 
     createAnimations() {
@@ -446,43 +414,37 @@ export class BootScene extends Phaser.Scene {
             // If texture doesn't exist, skip animation
         };
         
-        // ========== PLAYER ANIMATIONS (from separate spritesheets) ==========
-        // Each animation uses its own spritesheet key
-        // Frame counts: idle(6), walk(10), run(6), jump(7), fall(4), landing(6), hurt(8), death(8), shell_enter(5), shell_idle(2), shell_exit(5)
-        
-        createAnim('kirana_idle', 'kirana_idle', 0, 5, 8, -1);           // 6 frames
-        createAnim('kirana_walk', 'kirana_walk', 0, 9, 12, -1);          // 10 frames
-        createAnim('kirana_run', 'kirana_run', 0, 5, 14, -1);            // 6 frames
-        createAnim('kirana_jump', 'kirana_jump', 0, 6, 12, 0);           // 7 frames
-        createAnim('kirana_fall', 'kirana_fall', 0, 3, 10, -1);          // 4 frames
-        createAnim('kirana_landing', 'kirana_landing', 0, 5, 15, 0);     // 6 frames
-        createAnim('kirana_hurt', 'kirana_hurt', 0, 7, 12, 0);           // 8 frames
-        createAnim('kirana_death', 'kirana_death', 0, 7, 10, 0);         // 8 frames
-        createAnim('kirana_shell_enter', 'kirana_shell_enter', 0, 4, 12, 0);  // 5 frames
-        createAnim('kirana_shell_idle', 'kirana_shell_idle', 0, 1, 4, -1);    // 2 frames
-        createAnim('kirana_shell_exit', 'kirana_shell_exit', 0, 4, 12, 0);    // 5 frames
+        // ========== KIRANA ANIMATIONS ==========
+        createAnim('kirana_idle', 'kirana_idle', 0, 5, 8, -1);
+        createAnim('kirana_walk', 'kirana_walk', 0, 9, 12, -1);
+        createAnim('kirana_run', 'kirana_run', 0, 5, 14, -1);
+        createAnim('kirana_jump', 'kirana_jump', 0, 5, 12, 0); // 6 frames (0-5)
+        createAnim('kirana_fall', 'kirana_fall', 0, 2, 10, -1); // 3 frames (0-2)
+        createAnim('kirana_landing', 'kirana_landing', 0, 4, 15, 0); // 5 frames (0-4)
+        createAnim('kirana_hurt', 'kirana_hurt', 0, 5, 12, 0); // 6 frames (0-5)
+        createAnim('kirana_death', 'kirana_death', 0, 6, 10, 0); // 7 frames (0-6)
+        createAnim('kirana_shell_enter', 'kirana_shell_enter', 0, 4, 12, 0); // 5 frames
+        createAnim('kirana_shell_idle', 'kirana_shell_idle', 0, 2, 4, -1); // 3 frames
+        createAnim('kirana_shell_exit', 'kirana_shell_exit', 0, 4, 12, 0); // 5 frames
 
         // ========== GALUH ANIMATIONS ==========
         createAnim('galuh_idle', 'galuh_idle', 0, 3, 6, -1);
-        createAnim('galuh_walk', 'galuh_walk', 0, 7, 8, -1);
+        createAnim('galuh_walk', 'galuh_walk', 0, 3, 8, -1);
         createAnim('galuh_alert', 'galuh_alert', 0, 3, 8, 0);
-        createAnim('galuh_chase', 'galuh_chase', 0, 7, 10, -1);
-        createAnim('galuh_search', 'galuh_search', 0, 5, 8, -1);
+        createAnim('galuh_chase', 'galuh_chase', 0, 3, 10, -1);
+        createAnim('galuh_search', 'galuh_search', 0, 3, 8, -1);
 
         // ========== GIANT ANIMATIONS ==========
         createAnim('giant_idle', 'giant_idle', 0, 3, 4, -1);
-        createAnim('giant_walk', 'giant_walk', 0, 7, 6, -1);
-        createAnim('giant_stomp', 'giant_stomp', 0, 5, 8, 0);
+        createAnim('giant_walk', 'giant_walk', 0, 3, 6, -1);
+        createAnim('giant_stomp', 'giant_stomp', 0, 3, 8, 0);
         createAnim('giant_roar', 'giant_roar', 0, 3, 8, 0);
 
         // ========== PROPS ANIMATIONS ==========
         createAnim('door_open', 'prop_door', 0, 4, 10, 0);
-        createAnim('torch_burn', 'prop_torch', 0, 5, 10, -1);
-        // Switch frames
+        createAnim('torch_burn', 'prop_torch', 0, 3, 10, -1);
         createAnim('switch_on', 'prop_switch', 1, 1, 1, 0);
         createAnim('switch_off', 'prop_switch', 0, 0, 1, 0);
-        
-
 
         console.log('✅ Animations created (safe mode)');
     }

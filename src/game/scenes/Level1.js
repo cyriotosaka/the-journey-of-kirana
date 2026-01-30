@@ -86,20 +86,15 @@ export class Level1 extends Phaser.Scene {
 
     createPlaceholderLevel() {
         const { width, height } = this.cameras.main;
-        const groundY = height - 200; // Raised to avoid HUD overlap
+        const groundY = height - 60; // Lowered to align with BG bottom
 
-        // Ground to avoid HUD overlap
-        // Ground
+        // Ground (Invisible Physics Body)
         this.matter.add.rectangle(width, groundY + 40, width * 4, 80, {
             isStatic: true,
             label: 'ground',
         });
 
-        const groundGraphics = this.add.graphics();
-        groundGraphics.fillStyle(0x2a2a2a);
-        groundGraphics.fillRect(0, groundY, width * 4, 80);
-
-        // Platforms
+        // Platforms (Invisible Physics Bodies)
         const platforms = [
             { x: 400, y: groundY - 100, w: 200 },
             { x: 700, y: groundY - 180, w: 150 },
@@ -113,14 +108,14 @@ export class Level1 extends Phaser.Scene {
                 isStatic: true,
                 label: 'platform',
             });
-
-            const platGraphics = this.add.graphics();
-            platGraphics.fillStyle(0x3a3a3a);
-            platGraphics.fillRect(p.x - p.w / 2, p.y, p.w, 30);
         });
-
+        
+        // Removed graphics placeholders to show Panoramic BG
+        
         this.matter.world.setBounds(0, 0, width * 2.5, height);
     }
+
+
 
     createPlayer() {
         console.log('🏁 Level1: Creating player at', this.spawnX, this.spawnY);
