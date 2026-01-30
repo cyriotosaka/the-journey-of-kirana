@@ -86,7 +86,8 @@ export class Level1 extends Phaser.Scene {
 
     createPlaceholderLevel() {
         const { width, height } = this.cameras.main;
-        const groundY = height - 60; // Lowered to align with BG bottom
+        this.groundY = height - 60; // Lowered to align with BG bottom
+        const groundY = this.groundY;
 
         // Ground (Invisible Physics Body)
         this.matter.add.rectangle(width, groundY + 40, width * 4, 80, {
@@ -118,8 +119,10 @@ export class Level1 extends Phaser.Scene {
 
 
     createPlayer() {
-        console.log('🏁 Level1: Creating player at', this.spawnX, this.spawnY);
-        this.player = new Player(this, this.spawnX, this.spawnY);
+        const spawnY = this.spawnY || (this.groundY ? this.groundY - 100 : 500);
+        console.log('🏁 Level1: Creating player at', this.spawnX, spawnY);
+        this.player = new Player(this, this.spawnX || 100, spawnY);
+        this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
         console.log('✅ Level1: Player created instance');
     }
 

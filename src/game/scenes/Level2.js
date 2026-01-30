@@ -101,33 +101,25 @@ export class Level2 extends Phaser.Scene {
         const { width, height } = this.cameras.main;
         const groundY = height - 60;
 
-        // Floor
+        // Floor (Invisible)
         this.matter.add.rectangle(width, groundY + 30, width * 2, 60, {
             isStatic: true,
             label: 'ground',
         });
 
-        const floorGraphics = this.add.graphics();
-        floorGraphics.fillStyle(0x1a1515);
-        floorGraphics.fillRect(0, groundY, width * 2, 60);
-
-        // Ceiling
+        // Ceiling (Invisible)
         this.matter.add.rectangle(width, 30, width * 2, 60, {
             isStatic: true,
             label: 'ceiling',
         });
 
-        const ceilingGraphics = this.add.graphics();
-        ceilingGraphics.fillStyle(0x0a0808);
-        ceilingGraphics.fillRect(0, 0, width * 2, 60);
-
-        // Left wall
+        // Left wall (Invisible)
         this.matter.add.rectangle(30, height / 2, 60, height, {
             isStatic: true,
             label: 'wall',
         });
 
-        // Right wall
+        // Right wall (Invisible)
         this.matter.add.rectangle(width * 2 - 30, height / 2, 60, height, {
             isStatic: true,
             label: 'wall',
@@ -147,17 +139,9 @@ export class Level2 extends Phaser.Scene {
                 isStatic: true,
                 label: 'platform',
             });
-
-            const furnitureGraphics = this.add.graphics();
-            furnitureGraphics.fillStyle(0x2a2020);
-            furnitureGraphics.fillRect(f.x - f.w / 2, f.y, f.w, f.h);
-            
-            // Table legs
-            furnitureGraphics.fillStyle(0x1a1515);
-            furnitureGraphics.fillRect(f.x - f.w / 2 + 10, f.y + f.h, 15, groundY - f.y - f.h);
-            furnitureGraphics.fillRect(f.x + f.w / 2 - 25, f.y + f.h, 15, groundY - f.y - f.h);
         });
-
+        
+        // Removed graphics placeholders to show BG
         this.matter.world.setBounds(0, 0, width * 2, height);
     }
 
@@ -207,8 +191,8 @@ export class Level2 extends Phaser.Scene {
             this.interactables.push(spot);
         });
 
-        // Key (hidden on high shelf)
-        const key = new Item(this, 1400, height - 220, {
+        // Key (Moved to Table 2 for easier access)
+        const key = new Item(this, 1050, height - 160, {
             id: 'key_level2',
             name: 'Kunci Gudang',
             description: 'Kunci menuju kebebasan.',

@@ -207,6 +207,9 @@ export class Item extends Interactable {
             usable: itemData.usable || false,
         };
 
+        this.setScale(0.25); // Scale down items to match game world
+
+
         // Store reference to floating tween so we can stop it
         this.floatingTween = this.scene.tweens.add({
             targets: this,
@@ -236,6 +239,10 @@ export class Item extends Interactable {
     }
 
     interact(player) {
+        if (this.isCollected) return false; // Prevent double pickup
+        
+        this.isCollected = true;
+
         // Kirim ke inventory React
         GameEvents.collectItem(this.itemData);
 
@@ -247,6 +254,9 @@ export class Item extends Interactable {
             this.floatingTween = null;
         }
 
+        // Kill any other tweens on this object
+        this.scene.tweens.killTweensOf(this);
+
         // Pickup animation
         this.scene.tweens.add({
             targets: this,
@@ -256,7 +266,7 @@ export class Item extends Interactable {
             duration: 300,
             onComplete: () => {
                 if (this.sparkle) this.sparkle.destroy();
-                this.destroy();
+                this.destroy(); // Safe destroy
             },
         });
 
@@ -264,11 +274,9 @@ export class Item extends Interactable {
     }
 
     destroy() {
-        // Stop any remaining tweens
-        if (this.floatingTween) {
-            this.floatingTween.stop();
-            this.floatingTween = null;
-        }
+        // Stop any remaining tweens completely
+        this.scene.tweens.killTweensOf(this);
+        
         if (this.sparkle) {
             this.sparkle.destroy();
             this.sparkle = null;

@@ -81,7 +81,7 @@ export class BootScene extends Phaser.Scene {
         // PROPS
         this.propsConfig = [
             { key: 'prop_door', file: 'door.png', cols: 5, rows: 1 },
-            { key: 'prop_torch', file: 'torch.png', cols: 4, rows: 1 },
+            { key: 'prop_torch', file: 'torch.png', cols: 1, rows: 4 }, // Vertical strip
             { key: 'prop_switch', file: 'switch.png', cols: 2, rows: 1 },
         ];
 
@@ -395,10 +395,18 @@ export class BootScene extends Phaser.Scene {
             if (anims.exists(key)) return;
             
             if (isSpritesheet(textureKey)) {
-                // Real spritesheet - use frame numbers
+                const texture = this.textures.get(textureKey);
+                const maxFrame = texture.frameTotal - 1;
+                
+                // Clamp frames to actual available frames
+                const safeEnd = Math.min(endFrame, maxFrame);
+                const safeStart = Math.min(startFrame, maxFrame);
+
+                if (safeStart > safeEnd) return; // Invalid range
+
                 anims.create({
                     key,
-                    frames: anims.generateFrameNumbers(textureKey, { start: startFrame, end: endFrame }),
+                    frames: anims.generateFrameNumbers(textureKey, { start: safeStart, end: safeEnd }),
                     frameRate,
                     repeat,
                 });
