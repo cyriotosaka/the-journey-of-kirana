@@ -10,6 +10,7 @@ export default defineConfig({
         port: 3000,
         open: false,
         host: true,
+        allowedHosts: ['kirana.deepkernel.site', 'localhost', '127.0.0.1'],
     },
 
     // Build optimization
@@ -50,5 +51,4 @@ export default defineConfig({
     optimizeDeps: {
         include: ['phaser', 'zustand'],
     },
-    server: { allowedHosts: [ 'kirana.deepkernel.site' ] },
 });
