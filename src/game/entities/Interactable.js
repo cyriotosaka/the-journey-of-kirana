@@ -275,7 +275,9 @@ export class Item extends Interactable {
 
     destroy() {
         // Stop any remaining tweens completely
-        this.scene.tweens.killTweensOf(this);
+        if (this.scene) {
+            this.scene.tweens.killTweensOf(this);
+        }
         
         if (this.sparkle) {
             this.sparkle.destroy();

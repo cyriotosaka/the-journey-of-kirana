@@ -101,6 +101,10 @@ export class BootScene extends Phaser.Scene {
         this.load.image('item_shell_fragment', itemsPath + 'shell_fragment.png');
         this.load.image('item_health', itemsPath + 'potion.png');
 
+        // BACKGROUNDS
+        this.load.image('bg_level1', 'assets/images/backgrounds/level1/bg level 1 panoramic game.png');
+        this.load.image('bg_level2', 'assets/images/backgrounds/level2/bg level 2 panoramic game.png');
+
         this.load.on('progress', this.onLoadProgress, this);
         this.load.on('complete', this.onLoadComplete, this);
     }
