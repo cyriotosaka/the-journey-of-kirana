@@ -105,20 +105,21 @@ export class Level4 extends Phaser.Scene {
         this.enemies = [];
         const { height } = this.cameras.main;
 
-        // Swamp creature - slower but wider vision
-        const creature = new Enemy(this, 900, height - 150, 'enemy_creature', {
-            type: 'creature',
+        // Buto Ijo Kecil - di rawa
+        const butoKecil = new Enemy(this, 900, height - 150, 'buto_ijo', {
+            type: 'buto_ijo_kecil',
             visionRange: 220,
             visionAngle: 80,
             patrolSpeed: 1,
             chaseSpeed: 2.5,
+            scale: 1.3,
         });
-        creature.setTarget(this.player);
-        creature.setPatrolPath([
+        butoKecil.setTarget(this.player);
+        butoKecil.setPatrolPath([
             { x: 500, y: height - 150 },
             { x: 1300, y: height - 150 },
         ]);
-        this.enemies.push(creature);
+        this.enemies.push(butoKecil);
     }
 
     createInteractables() {

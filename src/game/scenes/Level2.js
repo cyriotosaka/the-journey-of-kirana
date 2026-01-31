@@ -346,6 +346,7 @@ export class Level2 extends Phaser.Scene {
 
     onPause() {
         if (!this.matter || !this.matter.world) return;
+        console.log('⏸️ Level2: onPause called');
         this.isPaused = true;
         this.matter.world.pause();
         if (this.player && this.player.inputManager) this.player.inputManager.disable();
@@ -353,20 +354,27 @@ export class Level2 extends Phaser.Scene {
 
     onResume() {
         if (!this.matter || !this.matter.world) return;
+        console.log('▶️ Level2: onResume called');
         this.isPaused = false;
+        this._resumeCalled = true; // Debug flag
         this.matter.world.resume();
-        if (this.player && this.player.inputManager) this.player.inputManager.enable();
+        if (this.player && this.player.inputManager) {
+            this.player.inputManager.enable();
+            console.log('▶️ Level2: Input enabled, isPaused:', this.isPaused, 'inputEnabled:', this.player.inputManager.enabled);
+        }
     }
 
     onDialogShow() {
         // Only handle if this scene is active
         if (!this.scene.isActive()) return;
+        console.log('💬 Level2: Dialog show');
         this.onPause();
     }
 
     onDialogHide() {
         // Only handle if this scene is active
         if (!this.scene.isActive()) return;
+        console.log('💬 Level2: Dialog hide');
         this.onResume();
     }
 
@@ -390,7 +398,17 @@ export class Level2 extends Phaser.Scene {
         // Always update lighting (so screen doesn't go dark during pause)
         if (this.lightingSystem) this.lightingSystem.update(time, delta);
 
-        if (this.isPaused || this.isGameOver) return;
+        if (this.isPaused || this.isGameOver) {
+            // Debug: Log once when stuck in paused state after first resume
+            if (!this._pauseDebugLogged && this._resumeCalled) {
+                console.log('🔴 Level2 STUCK: isPaused=', this.isPaused, 'isGameOver=', this.isGameOver);
+                this._pauseDebugLogged = true;
+            }
+            return;
+        }
+        
+        // Reset debug flag when running normally
+        this._pauseDebugLogged = false;
 
         this.player.update(time, delta);
         this.enemies.forEach((enemy) => enemy.update(time, delta));

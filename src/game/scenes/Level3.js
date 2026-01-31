@@ -107,20 +107,21 @@ export class Level3 extends Phaser.Scene {
         this.enemies = [];
         const { height } = this.cameras.main;
 
-        // Shadow enemy - siluet, tidak jelas
-        const shadow = new Enemy(this, 700, height - 150, 'enemy_shadow', {
-            type: 'shadow',
+        // Buto Ijo Kecil - anak buah buto ijo
+        const butoKecil = new Enemy(this, 700, height - 150, 'buto_ijo', {
+            type: 'buto_ijo_kecil',
             visionRange: 180,
             visionAngle: 50,
             patrolSpeed: 1.5,
             chaseSpeed: 3,
+            scale: 1.2, // Smaller than main buto ijo
         });
-        shadow.setTarget(this.player);
-        shadow.setPatrolPath([
+        butoKecil.setTarget(this.player);
+        butoKecil.setPatrolPath([
             { x: 400, y: height - 150 },
             { x: 1000, y: height - 150 },
         ]);
-        this.enemies.push(shadow);
+        this.enemies.push(butoKecil);
     }
 
     createInteractables() {

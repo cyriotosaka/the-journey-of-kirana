@@ -50,6 +50,10 @@ export class Player extends Phaser.Physics.Matter.Sprite {
 
         scene.add.existing(this);
         this.scene = scene;
+        
+        // Save spawn position (will be restored after physics setup)
+        this.spawnX = x;
+        this.spawnY = y;
 
         // ========== PLAYER STATS (from config) ==========
         this.health = PLAYER_CONFIG.INITIAL_HEALTH;
@@ -77,6 +81,10 @@ export class Player extends Phaser.Physics.Matter.Sprite {
 
         // ========== SETUP ==========
         this.setupPhysics();
+        
+        // IMPORTANT: Restore position after physics setup (setExistingBody resets it)
+        this.setPosition(this.spawnX, this.spawnY);
+        
         this.inputManager = new InputManager(scene);
         this.stateMachine = new StateMachine(this);
         this.stateMachine.addStates(PlayerStates);
@@ -367,6 +375,15 @@ export class Player extends Phaser.Physics.Matter.Sprite {
 
     update(time, delta) {
         if (this.isDead) return;
+
+        // Debug: Log input state once after Level 2 loads
+        if (this.scene.scene.key === 'Level2' && !this._inputDebugLogged) {
+            const h = this.inputManager.getHorizontal();
+            console.log('🎮 Player update running. Horizontal input:', h, 'InputEnabled:', this.inputManager.enabled);
+            if (h !== 0) {
+                this._inputDebugLogged = true;
+            }
+        }
 
         // Check interact input
         if (this.inputManager.isInteractJustPressed()) {

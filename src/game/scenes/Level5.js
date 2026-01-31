@@ -126,20 +126,21 @@ export class Level5 extends Phaser.Scene {
         ]);
         this.enemies.push(butoIjo);
 
-        // Minion patrols
-        const minion = new Enemy(this, 400, height - 150, 'enemy_minion', {
-            type: 'minion',
+        // Buto Ijo Kecil - anak buah
+        const butoKecil = new Enemy(this, 400, height - 150, 'buto_ijo', {
+            type: 'buto_ijo_kecil',
             visionRange: 150,
             visionAngle: 60,
             patrolSpeed: 1.5,
             chaseSpeed: 3,
+            scale: 1.2,
         });
-        minion.setTarget(this.player);
-        minion.setPatrolPath([
+        butoKecil.setTarget(this.player);
+        butoKecil.setPatrolPath([
             { x: 200, y: height - 150 },
             { x: 800, y: height - 150 },
         ]);
-        this.enemies.push(minion);
+        this.enemies.push(butoKecil);
     }
 
     createInteractables() {

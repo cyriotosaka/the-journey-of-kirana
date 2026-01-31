@@ -226,6 +226,50 @@ export class BootScene extends Phaser.Scene {
         }
         graphics.generateTexture('giant', 640, 512);
 
+        // ========== BUTO IJO (Green Giant) - 96x96 spritesheet ==========
+        graphics.clear();
+        for (let i = 0; i < 30; i++) {
+            const x = (i % 6) * 96;
+            const y = Math.floor(i / 6) * 96;
+            
+            // Body - Green
+            graphics.fillStyle(0x2d5a27, 1); // Dark green
+            graphics.fillCircle(x + 48, y + 35, 28);
+            
+            // Arms
+            graphics.fillStyle(0x3d7a37, 1); // Lighter green
+            graphics.fillRect(x + 15, y + 30, 15, 40);
+            graphics.fillRect(x + 66, y + 30, 15, 40);
+            
+            // Legs
+            graphics.fillRect(x + 30, y + 60, 16, 30);
+            graphics.fillRect(x + 50, y + 60, 16, 30);
+            
+            // Face
+            graphics.fillStyle(0x4a9a44, 1);
+            graphics.fillCircle(x + 48, y + 25, 20);
+            
+            // Eyes (menacing red)
+            graphics.fillStyle(0xff0000, 1);
+            graphics.fillCircle(x + 40, y + 22, 5);
+            graphics.fillCircle(x + 56, y + 22, 5);
+            
+            // Mouth
+            graphics.fillStyle(0x1a3a17, 1);
+            graphics.fillRect(x + 38, y + 32, 20, 6);
+        }
+        graphics.generateTexture('buto_ijo_base', 576, 480);
+        
+        // Convert buto_ijo_base to spritesheet with proper key (6 cols x 5 rows, 96x96 each)
+        if (this.textures.exists('buto_ijo_base')) {
+            const butoTexture = this.textures.get('buto_ijo_base');
+            const butoSource = butoTexture.getSourceImage();
+            this.textures.addSpriteSheet('buto_ijo', butoSource, {
+                frameWidth: 96,
+                frameHeight: 96,
+            });
+        }
+
         // ========== DOOR - 64x96 ==========
         graphics.clear();
         for (let i = 0; i < 5; i++) {
@@ -456,6 +500,49 @@ export class BootScene extends Phaser.Scene {
         createAnim('giant_walk', 'giant_walk', 0, 3, 6, -1);
         createAnim('giant_stomp', 'giant_stomp', 0, 3, 8, 0);
         createAnim('giant_roar', 'giant_roar', 0, 3, 8, 0);
+
+        // ========== BUTO IJO ANIMATIONS ==========
+        // Using buto_ijo placeholder texture with frame generation
+        if (!this.anims.exists('buto_ijo_idle')) {
+            this.anims.create({
+                key: 'buto_ijo_idle',
+                frames: this.anims.generateFrameNumbers('buto_ijo', { start: 0, end: 3 }),
+                frameRate: 6,
+                repeat: -1,
+            });
+        }
+        if (!this.anims.exists('buto_ijo_walk')) {
+            this.anims.create({
+                key: 'buto_ijo_walk',
+                frames: this.anims.generateFrameNumbers('buto_ijo', { start: 6, end: 11 }),
+                frameRate: 8,
+                repeat: -1,
+            });
+        }
+        if (!this.anims.exists('buto_ijo_chase')) {
+            this.anims.create({
+                key: 'buto_ijo_chase',
+                frames: this.anims.generateFrameNumbers('buto_ijo', { start: 12, end: 17 }),
+                frameRate: 10,
+                repeat: -1,
+            });
+        }
+        if (!this.anims.exists('buto_ijo_alert')) {
+            this.anims.create({
+                key: 'buto_ijo_alert',
+                frames: this.anims.generateFrameNumbers('buto_ijo', { start: 18, end: 21 }),
+                frameRate: 8,
+                repeat: 0,
+            });
+        }
+        if (!this.anims.exists('buto_ijo_search')) {
+            this.anims.create({
+                key: 'buto_ijo_search',
+                frames: this.anims.generateFrameNumbers('buto_ijo', { start: 22, end: 25 }),
+                frameRate: 6,
+                repeat: -1,
+            });
+        }
 
         // ========== PROPS ANIMATIONS ==========
         createAnim('door_open', 'prop_door', 0, 4, 10, 0);
