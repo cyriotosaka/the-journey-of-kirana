@@ -266,8 +266,8 @@ export class Level2 extends Phaser.Scene {
             flicker: true,
         });
 
-        // Slow fade from black
-        this.lightingSystem.fadeFromBlack(3000, 0.06);
+        // Note: Removed fadeFromBlack as it causes darkness during dialog pause
+        // Level 2 now starts fully lit
     }
 
     setupCamera() {
@@ -387,11 +387,13 @@ export class Level2 extends Phaser.Scene {
     }
 
     update(time, delta) {
+        // Always update lighting (so screen doesn't go dark during pause)
+        if (this.lightingSystem) this.lightingSystem.update(time, delta);
+
         if (this.isPaused || this.isGameOver) return;
 
         this.player.update(time, delta);
         this.enemies.forEach((enemy) => enemy.update(time, delta));
-        this.lightingSystem.update(time, delta);
 
         // Note: Parallax is now handled automatically via scrollFactor
         // No manual tilePositionX updates needed

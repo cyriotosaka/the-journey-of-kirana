@@ -238,10 +238,12 @@ export class Level4 extends Phaser.Scene {
     }
 
     update(time, delta) {
+        // Always update lighting (prevents dark screen during pause)
+        if (this.lightingSystem) this.lightingSystem.update(time, delta);
+
         if (this.isPaused || this.isGameOver) return;
         this.player.update(time, delta);
         this.enemies.forEach((enemy) => enemy.update(time, delta));
-        this.lightingSystem.update(time, delta);
 
         const camX = this.cameras.main.scrollX;
         if (this.bgLayer1) this.bgLayer1.tilePositionX = camX * 0.1;

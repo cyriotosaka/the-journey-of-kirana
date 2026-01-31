@@ -312,9 +312,11 @@ export class Level7 extends Phaser.Scene {
     }
 
     update(time, delta) {
+        // Always update lighting (prevents dark screen during pause)
+        if (this.lightingSystem) this.lightingSystem.update(time, delta);
+
         if (this.isPaused) return;
         this.player.update(time, delta);
-        this.lightingSystem.update(time, delta);
 
         // Update Enemies (Buto Ijo)
         if (this.enemies) {
