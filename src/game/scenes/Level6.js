@@ -219,8 +219,14 @@ export class Level6 extends Phaser.Scene {
         this.matter.world.resume();
         if (this.player?.inputManager) this.player.inputManager.enable();
     }
-    onDialogShow() { this.onPause(); }
-    onDialogHide() { this.onResume(); }
+    onDialogShow() {
+        if (!this.scene.isActive()) return;
+        this.onPause();
+    }
+    onDialogHide() {
+        if (!this.scene.isActive()) return;
+        this.onResume();
+    }
 
     update(time, delta) {
         if (this.isPaused || this.isGameOver) return;

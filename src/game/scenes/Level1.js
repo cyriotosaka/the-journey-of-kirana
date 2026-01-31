@@ -333,10 +333,12 @@ export class Level1 extends Phaser.Scene {
 
 
     onDialogShow() {
+        if (!this.scene.isActive()) return;
         this.onPause();
     }
 
     onDialogHide() {
+        if (!this.scene.isActive()) return;
         this.onResume();
     }
 

@@ -359,10 +359,14 @@ export class Level2 extends Phaser.Scene {
     }
 
     onDialogShow() {
+        // Only handle if this scene is active
+        if (!this.scene.isActive()) return;
         this.onPause();
     }
 
     onDialogHide() {
+        // Only handle if this scene is active
+        if (!this.scene.isActive()) return;
         this.onResume();
     }
 
