@@ -17,8 +17,8 @@ export class Level1 extends Phaser.Scene {
     }
 
     init(data) {
-        this.spawnX = data?.spawnX || 150;
-        this.spawnY = data?.spawnY || 500;
+        this.spawnX = data?.spawnX || 100;
+        this.spawnY = data?.spawnY || 600; // Closer to ground
         this.isPaused = false;
         this.isGameOver = false;
     }
@@ -158,7 +158,7 @@ export class Level1 extends Phaser.Scene {
     createInteractables() {
         this.interactables = [];
         const { height } = this.cameras.main;
-        const groundY = height - 200; // Match raised ground L122
+        const groundY = this.groundY || (height - 60); // Use class property or fallback
 
         const fragment = new Item(this, 500, groundY - 50, {
             id: 'shell_fragment_1',
@@ -257,6 +257,9 @@ export class Level1 extends Phaser.Scene {
         
         // Listen for volume changes from React settings
         EventBus.on('settings:volume_changed', this.onVolumeChanged, this);
+        
+        // Listen for scene change from React dialog
+        EventBus.on('scene:change', this.onSceneChange, this);
 
         // ========== DEV EVENTS ==========
         EventBus.on('dev:switch_level', this.onDevSwitchLevel, this);
@@ -285,6 +288,15 @@ export class Level1 extends Phaser.Scene {
     onVolumeChanged(data) {
         if (this.bgm) this.bgm.setVolume(data.bgm);
         if (this.ambience) this.ambience.setVolume(data.sfx * 0.2);
+    }
+    
+    onSceneChange(targetScene) {
+        this.cleanup();
+        if (targetScene === 'restart') {
+            this.scene.restart();
+        } else {
+            this.scene.start(targetScene);
+        }
     }
 
     onGameOver(data) {
@@ -358,6 +370,7 @@ export class Level1 extends Phaser.Scene {
         EventBus.off(EVENTS.DIALOG_HIDE, this.onDialogHide, this);
         EventBus.off('enemy:chase_started', this.onChaseStarted, this);
         EventBus.off('settings:volume_changed', this.onVolumeChanged, this);
+        EventBus.off('scene:change', this.onSceneChange, this);
 
         if (this.bgm) this.bgm.stop();
         if (this.ambience) this.ambience.stop();

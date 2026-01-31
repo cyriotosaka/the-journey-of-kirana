@@ -99,7 +99,7 @@ const Layout = () => {
                         <HealthBar />
                     </div>
 
-                    <div className="hud-bottom-center">
+                    <div className="hud-top-center">
                         <InventoryBar />
                     </div>
 

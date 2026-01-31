@@ -21,7 +21,7 @@ export class Level2 extends Phaser.Scene {
 
     init(data) {
         this.spawnX = data?.spawnX || 100;
-        this.spawnY = data?.spawnY || 500;
+        this.spawnY = data?.spawnY || 600;
         this.isPaused = false;
         this.isGameOver = false;
     }

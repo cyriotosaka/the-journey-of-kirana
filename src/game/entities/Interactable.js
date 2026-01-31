@@ -137,12 +137,22 @@ export class Door extends Interactable {
 
     interact(player) {
         if (this.isLocked) {
-            EventBus.emit(EVENTS.DIALOG_SHOW, {
-                character: '',
-                text: 'Pintu ini terkunci. Kamu butuh kunci untuk membukanya.',
-            });
-            this.playSound('sfx_locked');
-            return false;
+            // Check if player has the required key
+            const inventory = this.scene.registry.get('inventory') || [];
+            
+            if (this.keyRequired && inventory.includes(this.keyRequired)) {
+                this.unlock();
+                EventBus.emit(EVENTS.DIALOG_SHOW, {
+                    text: 'Kunci cocok! Pintu terbuka.',
+                });
+            } else {
+                EventBus.emit(EVENTS.DIALOG_SHOW, {
+                    character: '',
+                    text: 'Pintu ini terkunci. Kamu butuh kunci untuk membukanya.',
+                });
+                this.playSound('sfx_locked');
+                return false;
+            }
         }
 
         if (!this.isOpen) {
@@ -242,6 +252,13 @@ export class Item extends Interactable {
         if (this.isCollected) return false; // Prevent double pickup
         
         this.isCollected = true;
+
+        // Store in Phaser Registry for immediate access by Door/Gates
+        const inventory = this.scene.registry.get('inventory') || [];
+        if (!inventory.includes(this.itemData.id)) {
+            inventory.push(this.itemData.id);
+            this.scene.registry.set('inventory', inventory);
+        }
 
         // Kirim ke inventory React
         GameEvents.collectItem(this.itemData);

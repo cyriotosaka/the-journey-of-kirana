@@ -64,6 +64,13 @@
     transform: translateX(-50%);
 }
 
+.hud-top-center {
+    position: absolute;
+    top: var(--spacing-lg);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 /* Pause Button */
 .pause-button {
     width: 48px;

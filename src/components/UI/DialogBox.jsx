@@ -81,15 +81,19 @@ const DialogBox = () => {
         }
 
         hideDialog();
+        // Notify Phaser to resume game
+        EventBus.emit(EVENTS.DIALOG_HIDE);
     };
 
     const executeChoiceAction = (action) => {
         switch (action) {
             case 'restart':
                 EventBus.emit('game:restart');
+                EventBus.emit('scene:change', 'restart');
                 break;
             case 'menu':
                 EventBus.emit('game:return_to_menu');
+                EventBus.emit('scene:change', 'MainMenuScene');
                 break;
             case 'next_level':
                 EventBus.emit('game:next_level');
@@ -105,6 +109,8 @@ const DialogBox = () => {
             dialog.onClose();
         }
         hideDialog();
+        // Notify Phaser to resume game
+        EventBus.emit(EVENTS.DIALOG_HIDE);
         EventBus.emit(EVENTS.DIALOG_NEXT);
     };
 
