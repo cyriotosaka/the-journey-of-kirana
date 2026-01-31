@@ -9,6 +9,8 @@
     padding: var(--spacing-xs); /* Compact padding */
     box-shadow: var(--shadow-md);
     backdrop-filter: blur(5px);
+    width: 350px; /* Prevent full width stretch */
+    min-width: 300px;
 }
 
 /* Header */
@@ -37,9 +39,10 @@
 /* Slots Grid */
 .inventory-slots {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(6, 50px); /* Fixed width slots */
     gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+    justify-content: center;
 }
 
 /* Individual Slot */

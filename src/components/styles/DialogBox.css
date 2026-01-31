@@ -40,14 +40,15 @@
 
 /* Character Avatar */
 .dialog-avatar {
-    width: 120px;
-    height: 120px;
+    width: 150px;
+    height: 200px;
     flex-shrink: 0;
     border: 3px solid var(--color-primary);
-    border-radius: 50%;
+    border-radius: var(--radius-md); /* Rectangular with border radius */
     overflow: hidden;
     background: var(--color-bg-dark);
     box-shadow: var(--shadow-glow);
+    margin-bottom: -10px; /* Blend with container? Or stick up */
 }
 
 .dialog-avatar img {

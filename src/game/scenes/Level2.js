@@ -45,7 +45,7 @@ export class Level2 extends Phaser.Scene {
         this.time.delayedCall(1500, () => {
             EventBus.emit(EVENTS.DIALOG_SHOW, {
                 character: 'Kirana',
-                text: 'Dapur ini... bau busuk dan gelap. Aku harus hati-hati...',
+                text: 'Hutan ini... terasa sunyi dan mencekam. Aku harus waspada...',
                 avatar: null,
             });
         });

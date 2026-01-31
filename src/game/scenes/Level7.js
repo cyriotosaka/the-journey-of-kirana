@@ -222,22 +222,22 @@ export class Level7 extends Phaser.Scene {
 
     createButoIjo() {
         const { width, height } = this.cameras.main;
+        this.enemies = [];
 
-        // Buto Ijo placeholder - will be animated during confrontation
-        this.butoIjo = this.add.sprite(width - 200, height - 200, 'buto_ijo')
-            .setScale(3)
-            .setTint(0x44ff44)
-            .setDepth(5);
-
-        // If no texture, create placeholder
-        if (!this.textures.exists('buto_ijo')) {
-            const graphics = this.add.graphics();
-            graphics.fillStyle(0x225522);
-            graphics.fillRect(width - 300, height - 350, 200, 300);
-            graphics.fillStyle(0xff0000);
-            graphics.fillCircle(width - 250, height - 300, 15); // Eyes
-            graphics.fillCircle(width - 150, height - 300, 15);
-        }
+        // Buto Ijo Boss
+        this.butoIjo = new Enemy(this, width - 200, height - 150, 'buto_ijo', {
+            type: 'buto_ijo',
+            visionRange: 1000, // Always sees player
+            visionAngle: 360,
+            patrolSpeed: 2,
+            chaseSpeed: 5, // Fast!
+            scale: 3,
+            health: 500, // Boss Health
+            damage: 20,
+        });
+        
+        this.butoIjo.setTarget(this.player);
+        this.enemies.push(this.butoIjo);
     }
 
     createLighting() {
@@ -258,16 +258,14 @@ export class Level7 extends Phaser.Scene {
     }
 
     setupCamera() {
-        // Fixed camera for arena
-        this.cameras.main.setBounds(0, 0, 1280, 720);
+        const { width, height } = this.scale;
+        this.cameras.main.setBounds(0, 0, width, height);
+        this.cameras.main.startFollow(this.player);
     }
 
     setupAudio() {
-        if (this.cache.audio.exists('bgm_level7')) {
-            this.bgm = this.sound.add('bgm_level7', { volume: 0.4, loop: true });
-            this.bgm.play();
-            console.log('🎵 BGM Level 7 playing');
-        }
+        this.bgm = this.sound.add('bgm_level7', { loop: true, volume: 0.5 });
+        this.bgm.play();
     }
 
     setupEvents() {
@@ -275,6 +273,13 @@ export class Level7 extends Phaser.Scene {
         EventBus.on(EVENTS.GAME_RESUMED, this.onResume, this);
         EventBus.on(EVENTS.DIALOG_SHOW, this.onDialogShow, this);
         EventBus.on(EVENTS.DIALOG_HIDE, this.onDialogHide, this);
+        
+        // Settings events
+        EventBus.on('settings:volume_changed', (data) => {
+             if (this.bgm) this.bgm.setVolume(data.bgm);
+        }, this);
+
+        // DEV events
         EventBus.on('dev:switch_level', this.onDevSwitchLevel, this);
         EventBus.on('dev:set_health', this.onDevSetHealth, this);
         EventBus.on('dev:toggle_invincible', this.onDevToggleInvincible, this);
@@ -294,12 +299,34 @@ export class Level7 extends Phaser.Scene {
         this.player.update(time, delta);
         this.lightingSystem.update(time, delta);
 
+        // Update Enemies (Buto Ijo)
+        if (this.enemies) {
+            this.enemies.forEach(enemy => enemy.update(time, delta));
+        }
+
+        // Victory Condition: Check if Buto Ijo is Dead
+        if (this.butoIjo && this.butoIjo.isDead && !this.victoryTriggered) {
+             this.victoryTriggered = true;
+             this.handleVictory();
+        }
+
         // Subtle parallax in arena
         const camX = this.cameras.main.scrollX;
         if (this.bgLayer1) this.bgLayer1.tilePositionX = camX * 0.05;
         if (this.bgLayer2) this.bgLayer2.tilePositionX = camX * 0.1;
         if (this.bgLayer3) this.bgLayer3.tilePositionX = camX * 0.15;
         if (this.bgLayer4) this.bgLayer4.tilePositionX = camX * 0.2;
+    }
+
+    handleVictory() {
+        this.player.inputManager.disable();
+        this.matter.world.pause();
+        
+        EventBus.emit(EVENTS.DIALOG_SHOW, {
+            character: 'Kirana',
+            text: 'Akhirnya... Buto Ijo telah dikalahkan! Keong Emas telah kembali.',
+            choices: [{ text: 'Tamat', action: 'menu' }]
+        });
     }
 
     cleanup() {

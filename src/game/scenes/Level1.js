@@ -18,12 +18,13 @@ export class Level1 extends Phaser.Scene {
 
     init(data) {
         this.spawnX = data?.spawnX || 100;
-        this.spawnY = data?.spawnY || 600; // Closer to ground
+        this.spawnY = data?.spawnY || 660; // Excatly on ground
         this.isPaused = false;
         this.isGameOver = false;
     }
 
     create() {
+        // Fade in effect
         this.cameras.main.fadeIn(1000, 0, 0, 0);
 
         this.createBackground();
@@ -36,7 +37,21 @@ export class Level1 extends Phaser.Scene {
         this.setupAudio();
         this.setupEvents();
 
-        EventBus.emit(EVENTS.SCENE_CHANGED, 'Level1');
+        console.log(`🏁 ${this.scene.key}: Creating player at ${this.spawnX} ${this.spawnY}`);
+    }
+
+    onPause() {
+        if (!this.matter || !this.matter.world) return;
+        this.isPaused = true;
+        this.matter.world.pause();
+        if (this.player?.inputManager) this.player.inputManager.disable();
+    }
+
+    onResume() {
+        if (!this.matter || !this.matter.world) return;
+        this.isPaused = false;
+        this.matter.world.resume();
+        if (this.player?.inputManager) this.player.inputManager.enable();
     }
 
     createBackground() {
@@ -188,7 +203,7 @@ export class Level1 extends Phaser.Scene {
             isLocked: true,
             keyRequired: 'key_level1',
             targetScene: 'Level2',
-            targetSpawn: { x: 100, y: 500 },
+            targetSpawn: { x: 100, y: 640 },
         });
         this.interactables.push(exitDoor);
     }
@@ -315,17 +330,7 @@ export class Level1 extends Phaser.Scene {
         });
     }
 
-    onPause() {
-        this.isPaused = true;
-        this.matter.world.pause();
-        this.player.inputManager.disable();
-    }
 
-    onResume() {
-        this.isPaused = false;
-        this.matter.world.resume();
-        this.player.inputManager.enable();
-    }
 
     onDialogShow() {
         this.onPause();

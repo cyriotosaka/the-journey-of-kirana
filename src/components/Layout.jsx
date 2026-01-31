@@ -96,12 +96,14 @@ const Layout = () => {
             {gameStarted && showHUD && !showMenu && isInLevel && (
                 <div className="layer layer-hud">
                     <div className="hud-top-left">
-                        <HealthBar />
-                    </div>
-
-                    <div className="hud-top-center">
                         <InventoryBar />
                     </div>
+
+                    {currentScene === 'Level7' && (
+                        <div className="hud-top-center">
+                            <HealthBar />
+                        </div>
+                    )}
 
                     <div className="hud-top-right">
                         <div className="pause-hint" title="Tekan ESC untuk Pause">
