@@ -206,8 +206,19 @@ export class Level6 extends Phaser.Scene {
         // No game over in this peaceful level
     }
 
-    onPause() { this.isPaused = true; this.matter.world.pause(); this.player.inputManager.disable(); }
-    onResume() { this.isPaused = false; this.matter.world.resume(); this.player.inputManager.enable(); }
+    onPause() {
+        if (!this.matter || !this.matter.world) return;
+        this.isPaused = true;
+        this.matter.world.pause();
+        if (this.player?.inputManager) this.player.inputManager.disable();
+    }
+
+    onResume() {
+        if (!this.matter || !this.matter.world) return;
+        this.isPaused = false;
+        this.matter.world.resume();
+        if (this.player?.inputManager) this.player.inputManager.enable();
+    }
     onDialogShow() { this.onPause(); }
     onDialogHide() { this.onResume(); }
 

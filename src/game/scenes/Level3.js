@@ -227,15 +227,17 @@ export class Level3 extends Phaser.Scene {
     }
 
     onPause() {
+        if (!this.matter || !this.matter.world) return;
         this.isPaused = true;
         this.matter.world.pause();
-        this.player.inputManager.disable();
+        if (this.player?.inputManager) this.player.inputManager.disable();
     }
 
     onResume() {
+        if (!this.matter || !this.matter.world) return;
         this.isPaused = false;
         this.matter.world.resume();
-        this.player.inputManager.enable();
+        if (this.player?.inputManager) this.player.inputManager.enable();
     }
 
     onDialogShow() { this.onPause(); }
